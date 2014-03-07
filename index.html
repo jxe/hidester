@@ -16,10 +16,14 @@
 <div class="page" id="rooms">
 	<button class="simple_button" id="room_create">Create</button>
 	<div class="fbobjlist" id="rooms_list">
-		<li>
-			<b data-set="text:start_loc"></b> / <b data-set="text:song_title"></b>
-		</li>
+		<div class="room_tile">
+			<b data-set="text:title"></b>
+			<i data-set="text:distance_and_direction"></i>
+			<span data-set="text:indicator"></span>
+			<span data-set="text:members"></span>
+		</div>
 	</div>
+	<button class="simple_button" id="rooms_check_loc">Locate</button>
 </div>
 
 <div class="page" id="linkable_rooms">
@@ -51,18 +55,16 @@
 		<button id="set_title" class="simple_button">Set title</button>
 		<button id="set_location_here" class="simple_button">Here</button>
 		<button id="go_choose_song" class="simple_button">Choose song</button>
+		<hr>
+		<button id="leave_room" class="simple_button">Leave room</button>
 	</div>
 </div>
 
 <div class="page" id="choose_song">
 	<button id="go_room_settings" class="simple_button">back to settings</button>
   <form> <input type="search" id="search_input" class="simple_input" placeholder="search for a song" /> </form>
-	<ul id="genres">
-    <li><a href="#">80s</a><li><a href="#">ambient</a><li><a href="#">americana</a> <li><a href="#">avantgarde</a> <li><a href="#">blues</a>
-		<li><a href="#">chiptunes</a> <li><a href="#">choir</a> <li><a href="#">electronic</a> <li><a href="#">hip-hop</a>
-		<li><a href="#">glitch</a> <li><a href="#">gregorian</a> <li><a href="#">gospel</a> <li><a href="#">orchestral</a>
-		<li><a href="#">piano</a> <li><a href="#">arabic</a> <li><a href="#">chillout</a> <li><a href="#">classical</a>
-		<li><a href="#">dirty south</a> <li><a href="#">dub</a> <li><a href="#">funk</a> <li><a href="#">jazz</a> <li><a href="#">trance</a>
+	<ul id="genres" class="simple_list">
+		<li data-set="text:name"></li>
 	</ul>
   <div id="pick_song">
   	<ul id="search_results" class="simple_list">
@@ -76,32 +78,30 @@
 
 
 <div class="page" id="show_room">
+	<button id="go_rooms" class="simple_button">Other rooms</button>
 	<header>
+		<button id="edit_settings" class="simple_button">Edit</button>
 		<h1 id="room_title" class="simple_label"></h1>
 		<h3>Unlocked!</h3>
-		Entering this room takes <span id="room_requires" class="simple_label"></span>
-		<button id="edit_settings" class="simple_button">Edit</button>
+		<span id="room_requires" class="simple_label"></span>
+		<div class="fbobjlist" id="room_members">
+			<img data-set="src:photo_url">
+		</div>
 	</header>
 	<div class="player row panel simple_hidable">
 		<button class="simple_button" id="room_rewind">Rewind</button>
 		<button class="simple_button expando" id="room_play">Play</button>
 	</div>
-	<div class="panel">
-		<h3>Who's here?</h3>
-		<div class="fbobjlist" id="room_members">
-			<img data-set="src:photo_url">
-		</div>
-	</div>
 	<div class="expando"> <!-- scrollable part -->
 		<div id="room_messages" class="expando fbobjlist">
 			<div class="message">
-				<b data-set="text:author_name"></b>:
+				<b data-set="text:author_name"></b>
 				<i data-set="text:text"></i>
 				<span class="action" data-set="text:action"></span>
 			</div>
 		</div>
 		<div id="backlinks_section" class="panel simple_hidable">
-			<h3>Backlinks</h3>
+			<h3>Rooms that link to this room</h3>
 			<div id="backlinks" class="fbobjlist">
 				<div class="room">
 					<i data-set="text:title"></i>
@@ -118,9 +118,11 @@
 
 
 <div class="page" id="unlock_page">
-	<div class="panel">
+	<button id="go_other_rooms" class="simple_button">Other rooms</button>
+	<header>
+		<h1 id="unlock_room_title" class="simple_label"></h1>
 		This is a batcave, a secret chatroom.  To unlock it and see the messages and who's inside, you're going to need to <span id="remaining_requirements" class="simple_label"></span>.
-	</div>
+	</header>
 	<div class="panel">
 		<button id="next_step_button" class="simple_button">Next step</button>
 	</div>
@@ -132,7 +134,7 @@
 
 <script src='https://cdn.firebase.com/v0/firebase.js'></script>
 <script src='https://cdn.firebase.com/js/simple-login/1.2.3/firebase-simple-login.js'></script>
-<script src="http://connect.soundcloud.com/sdk.js"></script>
+<script src="https://connect.soundcloud.com/sdk.js"></script>
 <script src="firewidget.js"></script>
 <script src="fb.js"></script>
 <script src="english.js"></script>
