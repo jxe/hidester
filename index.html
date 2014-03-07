@@ -1,0 +1,142 @@
+<title>Batcave</title>
+<link rel="stylesheet" type="text/css" href="styles.css">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<!-- <link rel="apple-touch-icon-precomposed" href="soundprints2.jpg" /> -->
+
+
+<a style="float:right; color: #82E5E9;" href="#" id="login">FB login</a>
+
+
+
+
+<!-- pages -->
+
+<div class="page" id="rooms">
+	<button class="simple_button" id="room_create">Create</button>
+	<div class="fbobjlist" id="rooms_list">
+		<li>
+			<b data-set="text:start_loc"></b> / <b data-set="text:song_title"></b>
+		</li>
+	</div>
+</div>
+
+<div class="page" id="linkable_rooms">
+	<button class="simple_button" id="linked_room_create">Create</button>
+	<div class="fbobjlist" id="linkable_rooms_list">
+		<li> <b data-set="text:start_loc"></b> / <b data-set="text:song_title"></b> </li>
+	</div>
+</div>
+
+
+
+<!-- room related -->
+
+<div class="page" id="room_settings">
+	<div class="player row panel simple_hidable">
+		<button class="simple_button" id="room_settings_rewind">Rewind</button>
+		<button class="simple_button expando" id="room_settings_play">Play</button>
+		<button class="simple_button" id="room_settings_next">Next</button>
+	</div>
+	<button id="go_room" class="simple_button">back to room</button>
+	<div class="panel">
+		<h3>Conditions for unlocking this room</h3>
+		<ul id="room_attributes" class="fbobj">
+			<li> Title: <b data-set="text:title"></b> </li>
+			<li> Location: <b data-set="text:location"></b> </li>
+			<li> Song: <b data-set="text:song_title"></b> </li>
+			<!-- <li>Password</li> -->
+		</ul>
+		<button id="set_title" class="simple_button">Set title</button>
+		<button id="set_location_here" class="simple_button">Here</button>
+		<button id="go_choose_song" class="simple_button">Choose song</button>
+	</div>
+</div>
+
+<div class="page" id="choose_song">
+	<button id="go_room_settings" class="simple_button">back to settings</button>
+  <form> <input type="search" id="search_input" class="simple_input" placeholder="search for a song" /> </form>
+	<ul id="genres">
+    <li><a href="#">80s</a><li><a href="#">ambient</a><li><a href="#">americana</a> <li><a href="#">avantgarde</a> <li><a href="#">blues</a>
+		<li><a href="#">chiptunes</a> <li><a href="#">choir</a> <li><a href="#">electronic</a> <li><a href="#">hip-hop</a>
+		<li><a href="#">glitch</a> <li><a href="#">gregorian</a> <li><a href="#">gospel</a> <li><a href="#">orchestral</a>
+		<li><a href="#">piano</a> <li><a href="#">arabic</a> <li><a href="#">chillout</a> <li><a href="#">classical</a>
+		<li><a href="#">dirty south</a> <li><a href="#">dub</a> <li><a href="#">funk</a> <li><a href="#">jazz</a> <li><a href="#">trance</a>
+	</ul>
+  <div id="pick_song">
+  	<ul id="search_results" class="simple_list">
+  		<a href="#"><li >
+  			<span class="indicator">&rtri;</span>
+  			<span data-set="text:title">Song title</span>
+  		</li></a>
+  	</ul>
+  </div>
+</div>
+
+
+<div class="page" id="show_room">
+	<header>
+		<h1 id="room_title" class="simple_label"></h1>
+		<h3>Unlocked!</h3>
+		Entering this room takes <span id="room_requires" class="simple_label"></span>
+		<button id="edit_settings" class="simple_button">Edit</button>
+	</header>
+	<div class="player row panel simple_hidable">
+		<button class="simple_button" id="room_rewind">Rewind</button>
+		<button class="simple_button expando" id="room_play">Play</button>
+	</div>
+	<div class="panel">
+		<h3>Who's here?</h3>
+		<div class="fbobjlist" id="room_members">
+			<img data-set="src:photo_url">
+		</div>
+	</div>
+	<div class="expando"> <!-- scrollable part -->
+		<div id="room_messages" class="expando fbobjlist">
+			<div class="message">
+				<b data-set="text:author_name"></b>:
+				<i data-set="text:text"></i>
+				<span class="action" data-set="text:action"></span>
+			</div>
+		</div>
+		<div id="backlinks_section" class="panel simple_hidable">
+			<h3>Backlinks</h3>
+			<div id="backlinks" class="fbobjlist">
+				<div class="room">
+					<i data-set="text:title"></i>
+				</div>
+			</div>
+		</div>
+	</div> <!-- end scrollable part -->
+
+	<form class="panel row">
+		<input class="simple_input expando" id="message_add" placeholder="say what">
+		<button type='button' id="room_link" class="simple_button">Link</button>
+	</form>
+</div>
+
+
+<div class="page" id="unlock_page">
+	<div class="panel">
+		This is a batcave, a secret chatroom.  To unlock it and see the messages and who's inside, you're going to need to <span id="remaining_requirements" class="simple_label"></span>.
+	</div>
+	<div class="panel">
+		<button id="next_step_button" class="simple_button">Next step</button>
+	</div>
+</div>
+
+
+
+<!-- javascript -->
+
+<script src='https://cdn.firebase.com/v0/firebase.js'></script>
+<script src='https://cdn.firebase.com/js/simple-login/1.2.3/firebase-simple-login.js'></script>
+<script src="http://connect.soundcloud.com/sdk.js"></script>
+<script src="firewidget.js"></script>
+<script src="fb.js"></script>
+<script src="english.js"></script>
+<script src="loc.js"></script>
+<script src="sound.js"></script>
+<!-- <script src="utils.js"></script> -->
+<script src="pages.js"></script>
