@@ -243,6 +243,18 @@ function mikrotemplate(el, obj_or_array, id_pfx){
 		});
 	};
 
+	w.fbtextfield = function (el, ref) {
+		sub(ref, 'value', function(snap){
+			var v = snap.val();
+			el.value = v;
+		});
+		sub(el.form, 'submit', function(ev){
+			ev.preventDefault();
+			if (el.value) ref.set(el.value);
+			else ref.remove();
+			return false;
+		});
+	};
 
 	// requires jquery and the twitter typeahead.js thing
 	w.fbtypeahead = function(el, ref, onchange){

@@ -269,3 +269,7 @@ font-size: 13px;
 	background: #006383;
 	box-shadow: black 0px 0px 5px;
 }
+
+input.expando {
+	padding: 2px 10px;
+}

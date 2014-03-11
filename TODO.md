@@ -1,15 +1,5 @@
 TODO.md
 
-
-
-USABILITY
-- add indicator state for load_failed
-- alert on load failed with suggestions
-- unlock page should have its own style of play indicator
-- more info about why you have to link facebook
-
-
-
 ELA
 - compile lls using google maps
 - put in lls
@@ -21,16 +11,7 @@ ELA
 CHECK
 - (DONE, CHECK) sort by location
 - (DONE, CHECK) wire up player indicators - states for loading, playing, paused
-
-
-
-
-FOR AUTHORS
 - make fbtextfield for settings page title
-
-
-
-
 
 
 

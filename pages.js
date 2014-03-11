@@ -97,7 +97,7 @@ function rooms(link_from, default_tab){
             show_room(link_from);
         }, !!link_from],
         room_create: function(){
-            if (!current_user_id) return alert('Please log in with FB!');
+            if (!current_user_id) return alert('Please log in with FB!  Future version of this software will give you other options.');
             var new_room = { author: current_user_id };
             new_room.id = fb('rooms').push(new_room).name();
             if (link_from) link_room_to_room(link_from, new_room);
@@ -108,7 +108,7 @@ function rooms(link_from, default_tab){
             if (tabname == 'Nearby' && !curloc) return with_loc(function () { rooms(link_from, 'Nearby'); });
             reveal('#rooms #rooms_list', 'rooms_list', {
                 rooms_list: [fb('rooms'), function(room_entry){
-                    if (!current_user_id) return alert('Please log in with FB!');
+                    if (!current_user_id) return alert('Please log in with FB! Future version of this software will give you other options.');
                     if (link_from) return link_room_to_room(link_from, room_entry);
                     if (room_entry.members && room_entry.members[current_user_id]) show_room(room_entry);
                     else unlock_page(room_entry);
@@ -170,12 +170,28 @@ function link_room_to_room(r, link_to_room) {
 
 function player_view(el) {
     return function(state){
-        if (state == 'failed') el.innerHTML = 'failed';
         if (state == 'playing') el.innerHTML = '<img src="/img/pause.png">';
         if (state == 'paused') el.innerHTML = '<img src="/img/play.png">';
         if (state == 'loading') el.innerHTML = '...';
+        if (state == 'load_failed'){
+            el.innerHTML = 'failed';
+            alert('Loading the song failed.  Try exiting the room and reentering, or reloading the site.');
+        }
     }
 }
+
+function unlock_summary(el) {
+    return function(state){
+        if (state == 'playing') el.innerHTML = 'Playing... you will enter the room momentarily.';
+        if (state == 'paused') el.innerHTML = 'Paused...';
+        if (state == 'loading') el.innerHTML = 'Loading the song...';
+        if (state == 'load_failed') {
+            el.innerHTML = 'failed';
+            alert('Loading the song failed.  Try exiting the room and reentering, or reloading the site.');
+        }
+    }
+}
+
 
 
 function room_settings(r){
@@ -215,10 +231,7 @@ function room_settings(r){
                 return room.unlisted ? 'toggle off' : 'toggle on';
             }
         }],
-        set_title: function(){
-            var title = prompt('Title?');
-            if (title) fb('rooms/%', r.id).update({ title: title });
-        },
+        room_title_edit: fb('rooms/%/title', r.id),
         set_location_here: function(){
             if (r.start_loc){
                 fb('rooms/%/start_loc', r.id).remove();
@@ -377,7 +390,8 @@ function show_room(r){
 
 
 function unlock_page(r){
-    if (r.soundcloud_url) Player.stream('load', r.soundcloud_url);
+    var unlock_status_div = document.getElementById('unlock_status_div');
+    if (r.soundcloud_url) Player.stream('load', r.soundcloud_url, unlock_summary(unlock_status_div));
     var remaining_requirements = [];
     var next_step;
     if (r.members && r.members[current_user_id]) show_room(r);

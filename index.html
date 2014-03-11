@@ -17,12 +17,12 @@
 		<button class="simple_button" id="room_create"><big>+</big></button>
 	</header>
 	<div class="panel" id="login">
-		<button>Please log in with FB</button>
+		<button>Create a profile by linking facebook</button> in order to join rooms or make new rooms.
 	</div>
 	<div class="sticky panel">
 		<h3 class="simple_hidable" id="backlink_header">Pick a room to link to</h3>
 		<h3 class="simple_hidable" id="index_header">
-			These are hidden chatrooms.  If you're looking for one nearby, click "Nearby".
+			These are unlockable chatrooms.  Try looking for one nearby.
 		</h3>
 	</div>
 	<div class="simple_tabs" id="room_index_type">
@@ -137,10 +137,9 @@
 		<button class="simple_button" id="room_settings_next">Next</button>
 	</div>
 
-	<div class="panel">
-		Title: <b data-set="text:title"></b>
-		<button id="set_title" class="simple_button">Set title</button>
-	</div>
+	<form class="panel row">
+		<input id="room_title_edit" type="text" class="fbtextfield expando" placeholder="Add a title...">
+	</form>
 	<div class="panel white fbobj" id="room_attributes">
 		<h3>To unlock, users must:</h3>
 		<div id="set_location_here" class="simple_button togrow">
@@ -182,6 +181,7 @@
 	</div>
 	<div class="panel">
 		<button id="next_step_button" class="simple_button"><span id="button_label" class="simple_label">Next step</span></button>
+		<div id="unlock_status_div"></div>
 	</div>
 </div>
 

@@ -56,7 +56,12 @@ var Player = {
         if (Player.current.track) Player.clear();
         Player.current.track = track;
         Player.current.indicator = indicator;
+        var load_happened = false;
+        setTimeout(function () {
+            if (indicator && !load_happened) indicator('load_failed');
+        }, 20000);
         SC.stream(track, function(sound){
+            load_happened = true;
             if (!sound || !sound[method]) { console.log(sound); return; }
             Player.current.sound = sound;
             if (indicator){
