@@ -144,7 +144,7 @@ float:right;
 	background-repeat: no-repeat;
 	background-position: 50%;
 	border: none;
-	color: white;
+	color: red;
 	-webkit-appearance: none;
 	border:none;
 }
@@ -161,14 +161,13 @@ float:right;
 }
 
 #room_settings_next {
-background: url(/img/ff.png) black;
-background-repeat: no-repeat;
-background-position: 50%;
-border: none;
-color: transparent;
--webkit-appearance: none;
-border:none;
-
+	background: url(/img/ff.png) black;
+	background-repeat: no-repeat;
+	background-position: 50%;
+	border: none;
+	color: transparent;
+	-webkit-appearance: none;
+	border:none;
 }
 
 a.toggle {

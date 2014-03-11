@@ -124,7 +124,8 @@ function rooms(link_from, default_tab){
                         });
                     },
                     sort: function (arr) {
-                        return arr.sort(function (a,b) { return b.km_away - a.km_away; });
+                        if (tabname == 'Nearby') return arr.sort(function (a,b) { return a.km_away - b.km_away; });
+                        else return arr;
                     },
                     '.distance_and_direction': function (r) {
                         if (!curloc) return '';
