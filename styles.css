@@ -6,7 +6,9 @@ form{ margin: 0; }
 .row{ display: -webkit-flex; display: flex; }
 .expando{ -webkit-flex: auto; flex: auto; overflow-y: auto; }
 .page .panel { background: #ccf; padding: 10px; }
-header h3, .panel h3 { margin: 0; font-variant: small-caps; font-size: 14px; font-family: optima; color: #555; }
+header h3, .panel h3 {
+	margin: 0; font-variant: small-caps; font-size: 14px; font-family: optima; color: #9C9C9C;
+}
 h1 {
 	font-family: optima;
 	margin: 0;
@@ -232,7 +234,33 @@ font-size: 13px;
 .room_tile span {
 	position: absolute;
 	bottom: 0;
-	right: 5;
+	right: 6;
 	color: white;
 	text-shadow: rgba(0,0,0,0.3) 0px -1px 0px;
+}
+
+#room_index_type {
+	text-align:center;
+	margin-top:20px;
+}
+
+#room_index_type b {
+  padding: 3px 12px;
+  border-radius: 3px;
+  background: #E2CFCF;
+  margin-right: 8px;
+  color:white;
+  text-shadow: black 0px 0px 1px;
+  font-weight: normal;
+  font-size: 14px;
+  box-shadow: black 0px 0px 2px;
+  cursor: pointer;
+  line-height: 30px;
+}
+#room_index_type b:hover {
+  background: #a3a2a2;
+}
+#room_index_type b.selected {
+	background: #006383;
+	box-shadow: black 0px 0px 5px;
 }

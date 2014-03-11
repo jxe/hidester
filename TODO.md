@@ -1,16 +1,16 @@
 TODO.md
 
-REWIRE INDEX
-- index has global and nearby tabs
-- index can filter to nearby/global
-
-- make a proper backlinks page
+FOR USERS
 - fix compass directions
+- deal w facebook login better
+- make sure unlock page supports riddles
+- wire up player indicators - states for loading, load_failed, playing, paused
 
+
+FOR AUTHORS
+- make a proper backlinks page
 - restyle choose a song
 - make fbtextfield for settings page title
-- fix unlock page so that the button is right and it has a title bar and supports riddles
-- wire up indicators
 
 
 

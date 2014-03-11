@@ -17,8 +17,15 @@
 		<button class="simple_button" id="room_create"><big>+</big></button>
 		<a style="float:right; color: #82E5E9;" href="#" id="login">FB login</a>
 	</header>
-	<h3 class="simple_hidable" id="backlink_header">Pick a room to link to</h3>
-	<button class="simple_button header_back_button" id="rooms_check_loc"><img src="/img/whitelocate.png"></button>
+	<div class="white panel">
+		<h3 class="simple_hidable" id="backlink_header">Pick a room to link to</h3>
+		<h3 class="simple_hidable" id="index_header">
+			These are hidden chatrooms.  If you're looking for one nearby, click "Nearby".
+		</h3>
+	</div>
+	<div class="simple_tabs" id="room_index_type">
+		<b data-set="text:name"></b>
+	</div>
 	<div class="white panel centered fbobjlist" id="rooms_list">
 		<div class="room_card">
 			<div class="room_tile">
@@ -144,6 +151,13 @@
 			Answer a riddle
 		</div>
 		<li> Riddle: <b data-set="text:riddle_q"></b> => <b data-set="text:riddle_a"></b> </li>
+
+		<h3 style="margin-top:30px">Visible from links, or</h3>
+		<div id="toggle_visibility" class="simple_button togrow">
+			<a href="#" data-set="class:visible_toggle_class"></a>
+			to users nearby
+		</div>
+
 	</div>
 </div>
 
@@ -154,7 +168,7 @@
 		<button id="go_other_rooms" class="simple_button">Other rooms</button>
 	</header>
 	<div class="panel">
-		<h1 id="unlock_room_title" class="simple_label"></h1>
+		<h2 id="unlock_room_title" class="simple_label"></h2>
 		This us the door to a secret chatroom.  To unlock it and see the messages and who's inside, you're going to need to <span id="remaining_requirements" class="simple_label"></span>.
 	</div>
 	<div class="panel">

@@ -66,6 +66,22 @@
 				for (var i = children.length - 1; i >= 0; i--) children[i].onclick = f;
 			};
 			if (array) el.render(array);
+		},
+		simple_tabs: function (el, tabnames, onchange, default_tab) {
+			var array = tabnames.map(function (n) { return {name: n}; });
+			mikrotemplate(el, array);
+			var children = el.childNodes;
+			var f = function(ev, tab_el){
+				if (!tab_el) tab_el = this;
+				var prev_selected = el.querySelectorAll('.selected');
+				Array.prototype.forEach.call(prev_selected, function(x){ x.setAttribute('class', ''); });
+				tab_el.setAttribute('class', 'selected');
+				onchange( tab_el.data.name, ev );
+			};
+			for (var i = children.length - 1; i >= 0; i--){
+				children[i].onclick = f;
+				if (children[i].data.name == default_tab) f(null, children[i]);
+			}
 		}
 	};
 })();

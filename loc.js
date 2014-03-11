@@ -42,13 +42,26 @@ Number.prototype.toDeg = function() {
 Number.prototype.toRad = function() {
     return this * Math.PI / 180;
 };
+//
+// function bearing(lat1, lon1, lat2, lon2) {
+//     var dLon = (lon2-lon1).toRad();
+//     var y = Math.sin(dLon) * Math.cos(lat2);
+//     var x = Math.cos(lat1)*Math.sin(lat2) -
+//             Math.sin(lat1)*Math.cos(lat2)*Math.cos(dLon);
+//     var brng = Math.atan2(y, x).toDeg();
+//     return brng;
+// }
 
-function bearing(lat1, lon1, lat2, lon2) {
+function bearing(lat1,lon1,lat2,lon2){
     var dLon = (lon2-lon1).toRad();
+    lat1 = lat1.toRad();
+    lat2 = lat2.toRad();
+
     var y = Math.sin(dLon) * Math.cos(lat2);
     var x = Math.cos(lat1)*Math.sin(lat2) -
             Math.sin(lat1)*Math.cos(lat2)*Math.cos(dLon);
     var brng = Math.atan2(y, x).toDeg();
+
     return brng;
 }
 
@@ -60,7 +73,7 @@ function english_bearing(bearing) {
         'north', 'northeast', 'northeast', 'east', 'east', 'southeast', 'southeast',
         'south', 'south', 'southwest', 'southwest', 'west', 'west', 'northwest', 'northwest',
         'north'
-    ][in_sixteenths];
+    ][in_sixteenths] + " " + bearing;
 }
 
 function store_loc(){
