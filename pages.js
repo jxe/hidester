@@ -88,14 +88,20 @@ function nextSong(room){
 // all pages
 
 
-function rooms(){
+function rooms(link_from){
     reveal('.page', 'rooms', {
+        backlink_header: link_from,
+        rooms_back: [function () {
+            show_room(link_from);
+        }, !!link_from],
         room_create: function(){
             var new_room = { author: current_user_id };
             new_room.id = fb('rooms').push(new_room).name();
-            join_room(new_room);
+            if (link_from) link_room_to_room(link_from, new_room);
+            else join_room(new_room);
         },
         rooms_list: [fb('rooms'), function(room_entry){
+            if (link_from) return link_room_to_room(link_from, room_entry);
             if (room_entry.members && room_entry.members[current_user_id]) show_room(room_entry);
             else unlock_page(room_entry);
         }, {
@@ -126,19 +132,6 @@ function rooms(){
     });
 }
 
-
-function linkable_rooms(to_room){
-    reveal('.page', 'linkable_rooms', {
-        linked_room_create: function(){
-            var new_room = { author: current_user_id };
-            new_room.id = fb('rooms').push(new_room).name();
-            link_room_to_room(to_room, new_room);
-        },
-        linkable_rooms_list: [fb('rooms'), function(room_entry){
-            link_room_to_room(to_room, room_entry);
-        }]
-    });
-}
 
 
 function link_room_to_room(r, link_to_room) {
@@ -306,7 +299,7 @@ function show_room(r){
             if (Player.current.sound) msg.t = Player.current.sound.position / 1000;
             fb('room_messages/%', r.id).push(msg);
         },
-        room_link: function () { linkable_rooms(r); }
+        room_link: function () { rooms(r); }
     });
 }
 

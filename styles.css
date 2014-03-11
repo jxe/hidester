@@ -7,7 +7,18 @@ form{ margin: 0; }
 .expando{ -webkit-flex: auto; flex: auto; overflow-y: auto; }
 .page .panel { background: #ccf; padding: 10px; }
 header h3, .panel h3 { margin: 0; font-variant: small-caps; font-size: 14px; font-family: optima; color: #555; }
-h1 { margin: 0; font-size: 15px; font-family: optima; color: #333; }
+h1 {
+	font-family: optima;
+
+margin: 0;
+font-size: 20px;
+font-family: optima;
+color: #F3F0F0;
+align-self: center;
+vertical-align: baseline;
+text-align: center;
+text-shadow: black 0px -1px 0px;
+}
 
 #show_room h1, #show_room h3 { display: inline-block; }
 
@@ -30,6 +41,7 @@ h1 { margin: 0; font-size: 15px; font-family: optima; color: #333; }
 	background: #B4D9E7;
 /*	box-shadow:  rgb(138, 138, 138) 0px 1px 2px;*/
 	box-shadow: rgb(14, 158, 170) 0px 0px 4px 1px;
+	position: relative;
 }
 
 .page .message {
@@ -213,7 +225,7 @@ font-size: 13px;
 .room_tile span {
 position: absolute;
 bottom: 0;
-right: 3;
+right: 5;
 color: white;
 text-shadow: #666 0px -1px 1px;
 }
