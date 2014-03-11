@@ -119,9 +119,12 @@ function rooms(link_from, default_tab){
                         });
                         else return arr.filter(function (r) {
                             if (!r.start_loc || r.unlisted) return false;
-                            var km = distance(r.start_loc[0], r.start_loc[1], curloc[0], curloc[1]);
-                            return km < 20;
+                            r.km_away = distance(r.start_loc[0], r.start_loc[1], curloc[0], curloc[1]);
+                            return r.km_away < 20;
                         });
+                    },
+                    sort: function (arr) {
+                        return arr.sort(function (a,b) { return b.km_away - a.km_away; });
                     },
                     '.distance_and_direction': function (r) {
                         if (!curloc) return '';
@@ -165,8 +168,19 @@ function link_room_to_room(r, link_to_room) {
 }
 
 
+function player_view(el) {
+    return function(state){
+        if (state == 'failed') el.innerHTML = 'failed';
+        if (state == 'playing') el.innerHTML = '<img src="/img/pause.png">';
+        if (state == 'paused') el.innerHTML = '<img src="/img/play.png">';
+        if (state == 'loading') el.innerHTML = '...';
+    }
+}
+
+
 function room_settings(r){
-    if (r.soundcloud_url) Player.stream('load', r.soundcloud_url);
+    var indicator = document.getElementById('room_settings_play');
+    if (r.soundcloud_url) Player.stream('load', r.soundcloud_url, player_view(indicator));
     reveal('.page', 'room_settings', {
         '.player': r.song_title,
         room_settings_play: function(){
@@ -236,6 +250,13 @@ function room_settings(r){
                 fb('rooms/%', r.id).remove();
                 rooms();
             }
+            if (cmd == 'll'){
+                var ll = prompt('ll:');
+                if (!ll) return;
+                ll = ll.split(',');
+                var lat = Number(ll[0]), lon = Number(ll[1]);
+                fb('rooms/%', r.id).update({ start_loc: [lat, lon] });
+            }
         }
     });
 }
@@ -260,22 +281,50 @@ function choose_song(room){
 
                 playlist = shuffleArray(tracks);
                 nextSong(room);
-                room_settings(room);
+                hop_to_room(room.id, 'room_settings');
             });
         }],
         search_results: [[], function(clicked){
             // todo, play on search result click but don't set song
             fb('rooms/%', room.id).update(room_attributes_from_soundcloud_track(clicked));
-            room_settings(room);
+            hop_to_room(room.id, 'room_settings');
+        }]
+    });
+}
+
+
+function backlinks(r){
+    reveal('.page', 'room_backlinks', {
+        go_backlinks_room: function () {
+            show_room(r);
+        },
+        backlinks: [fb('rooms/%/backlinks', r.id), function(data){
+            hop_to_room(data.id);
+        }, {
+            '.distance_and_direction': function (r) {
+                if (!curloc) return '';
+                if (!r.start_loc) return 'global';
+                var km = distance(r.start_loc[0], r.start_loc[1], curloc[0], curloc[1]);
+                var meters = Math.floor(km*1000);
+                var dist = meters + 'm';
+                if (meters > 1000) dist = Math.floor(meters/100)/10 + 'km';
+                var brng = english_bearing(bearing(curloc[0], curloc[1], r.start_loc[0], r.start_loc[1]));
+                if (meters < 100) return "Here";
+                else return dist + " " + brng;
+            },
+            '.indicator': function (r) {
+                if (r.song_title) return "&#9834;";
+                else return "";
+            }
         }]
     });
 }
 
 
 
-
 function show_room(r){
-    if (r.soundcloud_url) Player.stream('load', r.soundcloud_url);
+    var indicator = document.getElementById('room_play');
+    if (r.soundcloud_url) Player.stream('load', r.soundcloud_url, player_view(indicator));
     var reqs = compact([
         r.start_loc && '<img src="img/locate.png">',
         r.song_title && '<img src="img/note.png">',
@@ -284,6 +333,7 @@ function show_room(r){
     reveal('.page', 'show_room', {
         '.player': r.song_title,
         go_rooms: rooms,
+        go_backlinks: [function () { backlinks(r); }, r.backlinks],
         room_play: function(){
             if (Player.current.sound) return Player.current.sound.togglePause();
             else return alert('No current sound');
@@ -308,10 +358,6 @@ function show_room(r){
                 if (msg.link) return "Follow link &raquo;";
                 else return '';
             }
-        }],
-        backlinks_section: r.backlinks,
-        backlinks: [fb('rooms/%/backlinks', r.id), function(data){
-            hop_to_room(data.id);
         }],
         message_add: function(entry){
             var msg = {
@@ -350,7 +396,6 @@ function unlock_page(r){
     }
     if (!next_step) return join_room(r);
 
-    console.log(next_step);
     reveal('.page', 'unlock_page', {
         go_other_rooms: rooms,
         unlock_room_title: r.title || 'Unnamed Room',

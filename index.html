@@ -53,19 +53,21 @@
 
 
 <div class="page" id="choose_song">
-	<button id="go_room_settings" class="simple_button">back to settings</button>
-  <form> <input type="search" id="search_input" class="simple_input" placeholder="search for a song" /> </form>
-	<ul id="genres" class="simple_list">
-		<li data-set="text:name"></li>
-	</ul>
-  <div id="pick_song">
-  	<ul id="search_results" class="simple_list">
-  		<a href="#"><li >
-  			<span class="indicator">&rtri;</span>
-  			<span data-set="text:title">Song title</span>
-  		</li></a>
-  	</ul>
-  </div>
+	<header>
+		<button class="simple_button" id="go_room_settings">back</button>
+	</header>
+	<div class="panel">
+		<form> <input type="search" id="search_input" class="simple_input" placeholder="search for a song" /> </form>
+		<ul id="search_results" class="simple_list">
+			<li data-set="text:title"></li>
+		</ul>
+	</div>
+	<div class="panel">
+		<h3>Or choose a genre</h3>
+		<ul id="genres" class="simple_list">
+			<li data-set="text:name"></li>
+		</ul>
+	</div>
 </div>
 
 
@@ -75,12 +77,17 @@
 	<header>
 		<button id="go_backlinks_room" class="header_back_button simple_button">Back</button>
 	</header>
-	<div id="backlinks_section" class="panel simple_hidable">
+	<div class="panel">
 		<h3>Rooms that link to this room</h3>
-		<div id="backlinks" class="fbobjlist">
-			<div class="room">
-				<i data-set="text:title"></i>
+	</div>
+	<div class="white panel centered fbobjlist" id="backlinks">
+		<div class="room_card">
+			<div class="room_tile">
+				<i data-set="text:distance_and_direction"></i>
+				<span data-set="text:indicator"></span>
+				<b data-set="text:title"></b>
 			</div>
+			<div class="members_text" data-set="text:members_text"></div>
 		</div>
 	</div>
 </div>
