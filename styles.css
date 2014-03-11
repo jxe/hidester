@@ -19,7 +19,15 @@ h1 {
 	text-shadow: black 0px -1px 0px;
 }
 
-#show_room h1, #show_room h3 { display: inline-block; }
+h2 {
+	font-family: optima;
+	margin: 0;
+	font-size: 20px;
+	align-self: center;
+	-webkit-align-self: center;
+}
+
+#show_room h2, #show_room h3 { display: inline-block; }
 
 #show_room header { color: #555; }
 
@@ -226,5 +234,5 @@ font-size: 13px;
 	bottom: 0;
 	right: 5;
 	color: white;
-	text-shadow: #666 0px -1px 0px;
+	text-shadow: rgba(0,0,0,0.3) 0px -1px 0px;
 }

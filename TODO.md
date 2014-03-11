@@ -1,10 +1,10 @@
 TODO.md
 
 REWIRE INDEX
-- generalize rooms() index to link page and backlinks
 - index has global and nearby tabs
 - index can filter to nearby/global
 
+- make a proper backlinks page
 - fix compass directions
 
 - restyle choose a song
