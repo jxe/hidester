@@ -188,6 +188,11 @@ a.toggle.off {
 
 .white.panel { background: white; }
 
+.sticky.panel {
+	border-bottom: solid thin #ccc;
+	background: rgb(241, 241, 209);
+}
+
 .togrow {
 	min-height: 30px;
 	font-size: 20px;
@@ -241,7 +246,7 @@ font-size: 13px;
 
 #room_index_type {
 	text-align:center;
-	margin-top:20px;
+	margin-top:10px;
 }
 
 #room_index_type b {

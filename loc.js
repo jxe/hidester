@@ -42,28 +42,6 @@ Number.prototype.toDeg = function() {
 Number.prototype.toRad = function() {
     return this * Math.PI / 180;
 };
-//
-// function bearing(lat1, lon1, lat2, lon2) {
-//     var dLon = (lon2-lon1).toRad();
-//     var y = Math.sin(dLon) * Math.cos(lat2);
-//     var x = Math.cos(lat1)*Math.sin(lat2) -
-//             Math.sin(lat1)*Math.cos(lat2)*Math.cos(dLon);
-//     var brng = Math.atan2(y, x).toDeg();
-//     return brng;
-// }
-
-function bearing(lat1,lon1,lat2,lon2){
-    var dLon = (lon2-lon1).toRad();
-    lat1 = lat1.toRad();
-    lat2 = lat2.toRad();
-
-    var y = Math.sin(dLon) * Math.cos(lat2);
-    var x = Math.cos(lat1)*Math.sin(lat2) -
-            Math.sin(lat1)*Math.cos(lat2)*Math.cos(dLon);
-    var brng = Math.atan2(y, x).toDeg();
-
-    return brng;
-}
 
 function english_bearing(bearing) {
     if (bearing<0) bearing += 360;
@@ -73,8 +51,25 @@ function english_bearing(bearing) {
         'north', 'northeast', 'northeast', 'east', 'east', 'southeast', 'southeast',
         'south', 'south', 'southwest', 'southwest', 'west', 'west', 'northwest', 'northwest',
         'north'
-    ][in_sixteenths] + " " + bearing;
+    ][in_sixteenths];
 }
+
+
+function bearing(lat1,lon1,lat2,lon2) {
+            var originLL = [lat1, lon1];
+            var destLL = [lat2, lon2];
+
+            // difference of longitude coords
+			var diffLon = destLL[1].toRad() - originLL[1].toRad();
+
+			// difference latitude coords phi
+			var diffPhi = Math.log(Math.tan(destLL[0].toRad() / 2 + Math.PI / 4) / Math.tan(originLL[0].toRad() / 2 + Math.PI / 4));
+
+			//return the angle, normalized
+			return (Math.atan2(diffLon, diffPhi).toDeg() + 360) % 360;
+};
+
+
 
 function store_loc(){
   if (curloc){

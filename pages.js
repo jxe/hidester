@@ -16,7 +16,7 @@ window.reveal = firewidget.reveal;
 
 // globals
 
-var playlist, curloc;
+var playlist, curloc, riddle_answer;
 var genres = "80s, ambient, americana, avantgarde, blues, chiptunes, choir, electronic, hip-hop, glitch, gregorian, gospel, orchestral, piano, arabic, chillout, classical, dirty south, dub, funk, jazz, trance".split(', ').map(function (x){
     return {name: x};
 });
@@ -97,6 +97,7 @@ function rooms(link_from, default_tab){
             show_room(link_from);
         }, !!link_from],
         room_create: function(){
+            if (!current_user_id) return alert('Please log in with FB!');
             var new_room = { author: current_user_id };
             new_room.id = fb('rooms').push(new_room).name();
             if (link_from) link_room_to_room(link_from, new_room);
@@ -107,6 +108,7 @@ function rooms(link_from, default_tab){
             if (tabname == 'Nearby' && !curloc) return with_loc(function () { rooms(link_from, 'Nearby'); });
             reveal('#rooms #rooms_list', 'rooms_list', {
                 rooms_list: [fb('rooms'), function(room_entry){
+                    if (!current_user_id) return alert('Please log in with FB!');
                     if (link_from) return link_room_to_room(link_from, room_entry);
                     if (room_entry.members && room_entry.members[current_user_id]) show_room(room_entry);
                     else unlock_page(room_entry);
@@ -126,9 +128,11 @@ function rooms(link_from, default_tab){
                         if (!r.start_loc) return 'global';
                         var km = distance(r.start_loc[0], r.start_loc[1], curloc[0], curloc[1]);
                         var meters = Math.floor(km*1000);
-                        var brng = english_bearing(bearing(r.start_loc[0], r.start_loc[1], curloc[0], curloc[1]));
+                        var dist = meters + 'm';
+                        if (meters > 1000) dist = Math.floor(meters/100)/10 + 'km';
+                        var brng = english_bearing(bearing(curloc[0], curloc[1], r.start_loc[0], r.start_loc[1]));
                         if (meters < 100) return "Here";
-                        else return meters + "m " + brng;
+                        else return dist + " " + brng;
                     },
                     '.indicator': function (r) {
                         if (r.song_title) return "&#9834;";
@@ -337,7 +341,7 @@ function unlock_page(r){
         remaining_requirements.push('go to the right location');
     }
     if (r.riddle_q && !user_has_solved_riddle_for_room(r)){
-        if (!next_step) next_step = 'provide_riddle';
+        if (!next_step) next_step = 'answer_riddle';
         remaining_requirements.push('answer a riddle');
     }
     if (r.song_title){
@@ -346,25 +350,22 @@ function unlock_page(r){
     }
     if (!next_step) return join_room(r);
 
-    // var reqs = compact([
-    //     r.start_loc && 'be in the right location',
-    //     r.song_title && 'listen to a song',
-    //     r.password && 'discover a password'
-    // ]);
     console.log(next_step);
     reveal('.page', 'unlock_page', {
         go_other_rooms: rooms,
         unlock_room_title: r.title || 'Unnamed Room',
         remaining_requirements: conjoin(remaining_requirements),
+        button_label: next_step.replace('_', ' '),
         next_step_button: [function(){
             if (next_step == 'check_location'){
                 with_loc(function(loc){
                     if (user_is_in_location_for_room(r)) unlock_page(r);
                     else alert('not close enough');
                 });
-            } else if (next_step == 'provide_password'){
+            } else if (next_step == 'answer_riddle'){
                 riddle_answer = prompt(r.riddle_q);
                 if (user_has_solved_riddle_for_room(r)) unlock_page(r);
+                else alert('Sorry, wrong answer.');
             } else if (next_step == 'play_song'){
                 if (Player.current.sound) {
                     Player.current.sound.onPosition(10000, function () {
@@ -375,36 +376,11 @@ function unlock_page(r){
                     alert('play_sound but no current sound!');
                 }
             }
-        }, true, next_step.replace('_', ' ')]
+        }, true]
     });
 }
 
 
-
-
-
-
-// m3
-
-function login_page(){ reveal('.page', 'login_page', { }); }
-
-
-
-
-
-
-// DONE
-
-function welcome_page(){
-    reveal('.page', 'welcome_page', {
-        room_no: function(entry){ show_room(entry); },
-        go_nearby: function(){
-            with_loc(function(){
-                near_you();
-            });
-        }
-    });
-}
 
 
 

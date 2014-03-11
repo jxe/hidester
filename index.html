@@ -15,9 +15,11 @@
 		<button class="simple_button" id="rooms_back">back</button>
 		<h1 class="expando">Many Secret Doors</h1>
 		<button class="simple_button" id="room_create"><big>+</big></button>
-		<a style="float:right; color: #82E5E9;" href="#" id="login">FB login</a>
 	</header>
-	<div class="white panel">
+	<div class="panel" id="login">
+		<button>Please log in with FB</button>
+	</div>
+	<div class="sticky panel">
 		<h3 class="simple_hidable" id="backlink_header">Pick a room to link to</h3>
 		<h3 class="simple_hidable" id="index_header">
 			These are hidden chatrooms.  If you're looking for one nearby, click "Nearby".
@@ -169,10 +171,10 @@
 	</header>
 	<div class="panel">
 		<h2 id="unlock_room_title" class="simple_label"></h2>
-		This us the door to a secret chatroom.  To unlock it and see the messages and who's inside, you're going to need to <span id="remaining_requirements" class="simple_label"></span>.
+		This is the door to a secret chatroom.  To unlock it and see the messages and who's inside, you're going to need to <span id="remaining_requirements" class="simple_label"></span>.
 	</div>
 	<div class="panel">
-		<button id="next_step_button" class="simple_button">Next step</button>
+		<button id="next_step_button" class="simple_button"><span id="button_label" class="simple_label">Next step</span></button>
 	</div>
 </div>
 
