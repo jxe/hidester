@@ -1,15 +1,11 @@
 TODO.md
 
-SET UP DOMAINS
-- buy domains
-- set up domains with github pages cname
-
 REWIRE INDEX
 - generalize rooms() index to link page and backlinks
 - index has global and nearby tabs
 - index can filter to nearby/global
 
-- fix compass points
+- fix compass directions
 
 - restyle choose a song
 - make fbtextfield for settings page title
