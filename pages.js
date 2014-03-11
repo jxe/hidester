@@ -28,6 +28,7 @@ function hop_to_room(room_id, fn) {
     fb('rooms/%', room_id).once('value', function (snap) {
         var v = snap.val();
         v.id = room_id;
+        if (fn == 'unlock_page' && v.members && v.members[current_user_id]) fn = 'show_room';
         window[fn](v);
     });
 }
@@ -57,8 +58,9 @@ function user_is_in_location_for_room(r){
     if (km < 1) return true;
 }
 
-function user_has_provided_password_for_room(room){
-    return false;
+function user_has_solved_riddle_for_room(room){
+    if (riddle_answer == room.riddle_a) return true;
+    else return false;
 }
 
 
@@ -97,7 +99,7 @@ function rooms(){
             if (room_entry.members && room_entry.members[current_user_id]) show_room(room_entry);
             else unlock_page(room_entry);
         }, {
-            distance_and_direction: function (r) {
+            '.distance_and_direction': function (r) {
                 if (!curloc) return '';
                 if (!r.start_loc) return 'global';
                 var km = distance(r.start_loc[0], r.start_loc[1], curloc[0], curloc[1]);
@@ -106,18 +108,20 @@ function rooms(){
                 if (meters < 100) return "Here";
                 else return meters + "m " + brng;
             },
-            indicator: function (r) {
+            '.indicator': function (r) {
                 if (r.song_title) return "&#9834;";
                 else return "";
             },
-            members: function (r) {
-                return Object.keys(r.members ||{}).length + " members";
+            '.members_text': function (r) {
+                var count = Object.keys(r.members ||{}).length;
+                if (count > 1) return count + " members";
+                else return '';
             }
         }],
         rooms_check_loc: function () {
             with_loc(function () {
                 rooms();
-            })
+            });
         }
     });
 }
@@ -167,27 +171,55 @@ function room_settings(r){
             hop_to_room(r.id, 'room_settings');
         },
 
-        go_room: function(){ show_room(r); },
+        go_room: function(){ hop_to_room(r.id); },
         go_choose_song: function(){ choose_song(r); },
         room_attributes: [fb('rooms/%', r.id), {
             location: function(room){
                 if (!room.start_loc) return "None yet.";
                 else return room.start_loc[0] + ", " + room.start_loc[1];
-            }
+            },
+            location_toggle_class: function (room) {
+                return room.start_loc ? 'toggle on' : 'toggle off';
+            },
+            riddle_toggle_class: function (room) {
+                return room.riddle_q ? 'toggle on' : 'toggle off';
+            },
+            song_toggle_class: function (room) {
+                return room.song_title ? 'toggle on' : 'toggle off';
+            },
         }],
         set_title: function(){
             var title = prompt('Title?');
             if (title) fb('rooms/%', r.id).update({ title: title });
         },
         set_location_here: function(){
-            with_loc(function(loc){
-                fb('rooms/%', r.id).update({ start_loc: [loc.coords.latitude, loc.coords.longitude] });
-            });
+            if (r.start_loc){
+                fb('rooms/%/start_loc', r.id).remove();
+            } else {
+                with_loc(function(loc){
+                    fb('rooms/%', r.id).update({ start_loc: [loc.coords.latitude, loc.coords.longitude] });
+                });
+            }
         },
-        leave_room: function () {
-            if (r.author == current_user_id) fb('rooms/%/author', r.id).remove();
-            fb('rooms/%/members/%', r.id, current_user_id).remove();
-            hop_to_room(r.id);
+        set_riddle: function(){
+            if (r.riddle_q) return fb('rooms/%/riddle_q', r.id).remove();
+            var q = prompt('What question to you want answered?');
+            if (!q) return;
+            var a = prompt('What\'s the answer?');
+            if (!a) return;
+            fb('rooms/%', r.id).update({ riddle_q: q, riddle_a: a });
+        },
+        commands: function () {
+            var cmd = prompt("Command:");
+            if (cmd == 'leave'){
+                if (r.author == current_user_id) fb('rooms/%/author', r.id).remove();
+                fb('rooms/%/members/%', r.id, current_user_id).remove();
+                hop_to_room(r.id);
+            }
+            if (cmd == 'delete'){
+                fb('rooms/%', r.id).remove();
+                rooms();
+            }
         }
     });
 }
@@ -229,9 +261,9 @@ function choose_song(room){
 function show_room(r){
     if (r.soundcloud_url) Player.stream('load', r.soundcloud_url);
     var reqs = compact([
-        r.start_loc && 'being in a location',
-        r.song_title && 'listening to a song',
-        r.password && 'discovering a password'
+        r.start_loc && '<img src="img/locate.png">',
+        r.song_title && '<img src="img/note.png">',
+        r.riddle_q && '<img src="img/puzzle.png">'
     ]);
     reveal('.page', 'show_room', {
         '.player': r.song_title,
@@ -244,19 +276,19 @@ function show_room(r){
             if (Player.current.sound) Player.current.sound.setPosition(0);
         },
         room_title: r.title || "New Room",
-        room_requires: reqs[0] ? "Required " + conjoin(reqs) : 'Public room',
-        edit_settings: [function(){
+        room_requires: reqs[0] ? reqs.join('') : 'Public',
+        edit_settings: function(){
             if (r.author == current_user_id) room_settings(r);
-        }, r.author == current_user_id],
+        },
         room_members: [fb('rooms/%/members', r.id), null, {
-            photo_url: function(member){
+            '.photo_url': function(member){
                 return "http://graph.facebook.com/" + member.facebook_id + '/picture';
             }
         }],
         room_messages: [fb('room_messages/%', r.id), function(msg){
             hop_to_room(msg.link);
         }, {
-            action: function (msg) {
+            '.action': function (msg) {
                 if (msg.link) return "Follow link &raquo;";
                 else return '';
             }
@@ -286,14 +318,15 @@ function unlock_page(r){
     if (r.soundcloud_url) Player.stream('load', r.soundcloud_url);
     var remaining_requirements = [];
     var next_step;
+    if (r.members && r.members[current_user_id]) show_room(r);
     if (r.author == current_user_id) return join_room(r);
     if (r.start_loc && !user_is_in_location_for_room(r)){
         if (!next_step) next_step = 'check_location';
         remaining_requirements.push('go to the right location');
     }
-    if (r.password && !user_has_provided_password_for_room(r)){
-        if (!next_step) next_step = 'provide_password';
-        remaining_requirements.push('provide a password');
+    if (r.riddle_q && !user_has_solved_riddle_for_room(r)){
+        if (!next_step) next_step = 'provide_riddle';
+        remaining_requirements.push('answer a riddle');
     }
     if (r.song_title){
         if (!next_step) next_step = 'play_song';
@@ -318,7 +351,8 @@ function unlock_page(r){
                     else alert('not close enough');
                 });
             } else if (next_step == 'provide_password'){
-                // TODO
+                riddle_answer = prompt(r.riddle_q);
+                if (user_has_solved_riddle_for_room(r)) unlock_page(r);
             } else if (next_step == 'play_song'){
                 if (Player.current.sound) {
                     Player.current.sound.onPosition(10000, function () {

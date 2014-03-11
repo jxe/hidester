@@ -45,7 +45,7 @@ var Player = {
             Player.current.sound.unload();
         }
         if (Player.current.indicator) {
-            Player.current.indicator.innerHTML = "&#9654;";
+            Player.current.indicator('removing');
         }
         Player.current = {};
     },
@@ -56,15 +56,14 @@ var Player = {
         if (Player.current.track) Player.clear();
         Player.current.track = track;
         Player.current.indicator = indicator;
-        console.log('calling sc.stream', method, track);
         SC.stream(track, function(sound){
             if (!sound || !sound[method]) { console.log(sound); return; }
             Player.current.sound = sound;
             if (indicator){
-                indicator.innerHTML = "&#9654;";
-                options.onplay=function(){ indicator.innerHTML = "&#10074;&#10074"; };
-                options.onpause=function(){ indicator.innerHTML = "&#9654;"; };
-                options.onresume=function(){ indicator.innerHTML = "i&#10074;&#10074;"; };
+                indicator('loading');
+                options.onplay=function(){ indicator('playing'); };
+                options.onpause=function(){ indicator('paused'); };
+                options.onresume=function(){ indicator('playing'); };
             }
             sound[method](options);
         });

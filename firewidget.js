@@ -124,18 +124,24 @@ function mikrotemplate(el, obj_or_array, id_pfx){
 		return Object.keys(obj).map(function(x){ obj[x].id = x; return obj[x]; });
 	}
 
-	w.fbobjlist = function(el, ref, onclick, calcfns, id_pfx){
-		if (!id_pfx) id_pfx = '';
+	w.fbobjlist = function(el, ref, onclick, options, id_pfx){
+		if (!options) options = {};
+		var id_pfd = options.id_pfx || '';
 		sub(ref, 'value', function(snap){
 			var value = snap.val();
 			var array = value ? values(value) : [];
-			if (calcfns) array.forEach(function(o){
-				for (var k in calcfns){
-					o[k] = calcfns[k](o, function(v){
-						var item = document.getElementById(id_pfx + o.id);
-						o[k] = v;
-						mikrotemplate(item, o, id_pfx);
-					});
+			if (options.filter) array = options.filter(array);
+			if (options.sort)   array = options.sort(array);
+			array.forEach(function(o){
+				for (var opt in options){
+					if (opt[0] == '.'){
+						var k = opt.slice(1);
+						o[k] = options[opt](o, function(v){
+							var item = document.getElementById(id_pfx + o.id);
+							o[k] = v;
+							mikrotemplate(item, o, id_pfx);
+						});
+					}
 				}
 			});
 			mikrotemplate(el, array, id_pfx);

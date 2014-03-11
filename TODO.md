@@ -1,14 +1,36 @@
 TODO.md
 
+SET UP DOMAINS
+- buy domains
+- set up domains with github pages cname
+
+REWIRE INDEX
+- generalize rooms() index to link page and backlinks
+- index has global and nearby tabs
+- index can filter to nearby/global
+
+- fix compass points
+
+- restyle choose a song
+- make fbtextfield for settings page title
+- fix unlock page so that the button is right and it has a title bar and supports riddles
+- wire up indicators
+
+
+
+- write a test for bearing based on lat/lng for several bay area places
+- on unlock screen, button doesn't have title
 - choosing a song doesn't reload the song settings right
-- unlock screen should look way better, with title, etc
-- rooms can be hidden/shown  ('super secret / help strangers unlock this room')
+
+- add passwords
+- limit rooms to just those nearby
 - limit linkable rooms to just those nearby
-- index page: indicate whether there's a song, show member count
+
+- unlock screen should look way better
+- rooms can be hidden/shown  ('super secret / help strangers unlock this room')
 
 
 m4
-- add passwords
 - manual entry of locations
 
 m5

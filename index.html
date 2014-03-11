@@ -1,12 +1,9 @@
 <title>Batcave</title>
 <link rel="stylesheet" type="text/css" href="styles.css">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" />
-<meta name="apple-mobile-web-app-capable" content="yes" />
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<!-- <link rel="apple-touch-icon-precomposed" href="soundprints2.jpg" /> -->
-
-
-<a style="float:right; color: #82E5E9;" href="#" id="login">FB login</a>
+<!-- <meta name="apple-mobile-web-app-capable" content="yes" /> -->
+<!-- <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" /> -->
+<link rel="apple-touch-icon-precomposed" href="icon.jpg" />
 
 
 
@@ -14,16 +11,21 @@
 <!-- pages -->
 
 <div class="page" id="rooms">
-	<button class="simple_button" id="room_create">Create</button>
-	<div class="fbobjlist" id="rooms_list">
-		<div class="room_tile">
-			<b data-set="text:title"></b>
-			<i data-set="text:distance_and_direction"></i>
-			<span data-set="text:indicator"></span>
-			<span data-set="text:members"></span>
+	<header>
+		<button class="simple_button header_back_button" id="rooms_check_loc"><img src="/img/whitelocate.png"></button>
+		<button class="simple_button header_right_button" id="room_create"><big>+</big></button>
+		<a style="float:right; color: #82E5E9;" href="#" id="login">FB login</a>
+	</header>
+	<div class="white panel centered fbobjlist" id="rooms_list">
+		<div class="room_card">
+			<div class="room_tile">
+				<i data-set="text:distance_and_direction"></i>
+				<span data-set="text:indicator"></span>
+				<b data-set="text:title"></b>
+			</div>
+			<div class="members_text" data-set="text:members_text"></div>
 		</div>
 	</div>
-	<button class="simple_button" id="rooms_check_loc">Locate</button>
 </div>
 
 <div class="page" id="linkable_rooms">
@@ -37,28 +39,6 @@
 
 <!-- room related -->
 
-<div class="page" id="room_settings">
-	<div class="player row panel simple_hidable">
-		<button class="simple_button" id="room_settings_rewind">Rewind</button>
-		<button class="simple_button expando" id="room_settings_play">Play</button>
-		<button class="simple_button" id="room_settings_next">Next</button>
-	</div>
-	<button id="go_room" class="simple_button">back to room</button>
-	<div class="panel">
-		<h3>Conditions for unlocking this room</h3>
-		<ul id="room_attributes" class="fbobj">
-			<li> Title: <b data-set="text:title"></b> </li>
-			<li> Location: <b data-set="text:location"></b> </li>
-			<li> Song: <b data-set="text:song_title"></b> </li>
-			<!-- <li>Password</li> -->
-		</ul>
-		<button id="set_title" class="simple_button">Set title</button>
-		<button id="set_location_here" class="simple_button">Here</button>
-		<button id="go_choose_song" class="simple_button">Choose song</button>
-		<hr>
-		<button id="leave_room" class="simple_button">Leave room</button>
-	</div>
-</div>
 
 <div class="page" id="choose_song">
 	<button id="go_room_settings" class="simple_button">back to settings</button>
@@ -77,39 +57,48 @@
 </div>
 
 
-<div class="page" id="show_room">
-	<button id="go_rooms" class="simple_button">Other rooms</button>
+
+
+<div class="page" id="room_backlinks">
 	<header>
-		<button id="edit_settings" class="simple_button">Edit</button>
-		<h1 id="room_title" class="simple_label"></h1>
-		<h3>Unlocked!</h3>
-		<span id="room_requires" class="simple_label"></span>
-		<div class="fbobjlist" id="room_members">
-			<img data-set="src:photo_url">
-		</div>
+		<button id="go_backlinks_room" class="header_back_button simple_button">Back</button>
 	</header>
+	<div id="backlinks_section" class="panel simple_hidable">
+		<h3>Rooms that link to this room</h3>
+		<div id="backlinks" class="fbobjlist">
+			<div class="room">
+				<i data-set="text:title"></i>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+<div class="page" id="show_room">
+	<header>
+		<button id="go_rooms" class="header_back_button simple_button"><big>&larr;</big></button>
+		<button id="go_backlinks" class="header_right_button simple_button">Links</button>
+	</header>
+	<div class="panel simple_button" id="edit_settings">
+		<h1 id="room_title" class="simple_label"></h1>
+		<span id="room_requires" class="simple_label"></span>
+		<span class="label">unlocked</span>
+	</div>
 	<div class="player row panel simple_hidable">
 		<button class="simple_button" id="room_rewind">Rewind</button>
 		<button class="simple_button expando" id="room_play">Play</button>
 	</div>
-	<div class="expando"> <!-- scrollable part -->
-		<div id="room_messages" class="expando fbobjlist">
-			<div class="message">
-				<b data-set="text:author_name"></b>
-				<i data-set="text:text"></i>
-				<span class="action" data-set="text:action"></span>
-			</div>
+	<div class="people panel fbobjlist" id="room_members">
+		<img data-set="src:photo_url">
+	</div>
+	<div id="room_messages" class="expando fbobjlist">
+		<div class="message">
+			<b data-set="text:author_name"></b>
+			<i data-set="text:text"></i>
+			<span class="action" data-set="text:action"></span>
 		</div>
-		<div id="backlinks_section" class="panel simple_hidable">
-			<h3>Rooms that link to this room</h3>
-			<div id="backlinks" class="fbobjlist">
-				<div class="room">
-					<i data-set="text:title"></i>
-				</div>
-			</div>
-		</div>
-	</div> <!-- end scrollable part -->
-
+	</div>
 	<form class="panel row">
 		<input class="simple_input expando" id="message_add" placeholder="say what">
 		<button type='button' id="room_link" class="simple_button">Link</button>
@@ -117,12 +106,54 @@
 </div>
 
 
-<div class="page" id="unlock_page">
-	<button id="go_other_rooms" class="simple_button">Other rooms</button>
+<div class="page" id="room_settings">
 	<header>
+		<button class="header_back_button simple_button" id="go_room">back</button>
+		<button id="commands" class="simple_button header_right_button"><img src="/img/settings.png" /></button>
+	</header>
+
+	<div class="player row panel simple_hidable">
+		<button class="simple_button" id="room_settings_rewind">Rewind</button>
+		<button class="simple_button expando" id="room_settings_play">Play</button>
+		<button class="simple_button" id="room_settings_next">Next</button>
+	</div>
+
+	<div class="panel">
+		Title: <b data-set="text:title"></b>
+		<button id="set_title" class="simple_button">Set title</button>
+	</div>
+	<div class="panel white fbobj" id="room_attributes">
+		<h3>To unlock, users must:</h3>
+		<div id="set_location_here" class="simple_button togrow">
+			<a href="#" data-set="class:location_toggle_class"></a>
+			Go to a location
+		</div>
+		<li> Location: <b data-set="text:location"></b> </li>
+
+		<div id="go_choose_song" class="simple_button  togrow">
+			<a href="#" data-set="class:song_toggle_class"></a>
+			Listen to a song
+		</div>
+		<li> Song: <b data-set="text:song_title"></b> </li>
+
+		<div id="set_riddle" class="simple_button  togrow">
+			<a href="#" data-set="class:riddle_toggle_class"></a>
+			Answer a riddle
+		</div>
+		<li> Riddle: <b data-set="text:riddle_q"></b> => <b data-set="text:riddle_a"></b> </li>
+	</div>
+</div>
+
+
+
+<div class="page" id="unlock_page">
+	<header>
+		<button id="go_other_rooms" class="simple_button">Other rooms</button>
+	</header>
+	<div class="panel">
 		<h1 id="unlock_room_title" class="simple_label"></h1>
 		This is a batcave, a secret chatroom.  To unlock it and see the messages and who's inside, you're going to need to <span id="remaining_requirements" class="simple_label"></span>.
-	</header>
+	</div>
 	<div class="panel">
 		<button id="next_step_button" class="simple_button">Next step</button>
 	</div>

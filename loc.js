@@ -41,7 +41,7 @@ Number.prototype.toDeg = function() {
 };
 Number.prototype.toRad = function() {
     return this * Math.PI / 180;
-}
+};
 
 function bearing(lat1, lon1, lat2, lon2) {
     var dLon = (lon2-lon1).toRad();
@@ -55,6 +55,7 @@ function bearing(lat1, lon1, lat2, lon2) {
 function english_bearing(bearing) {
     if (bearing<0) bearing += 360;
     var in_sixteenths = Math.floor(bearing/22.5);
+    console.log(bearing, in_sixteenths);
     return [
         'north', 'northeast', 'northeast', 'east', 'east', 'southeast', 'southeast',
         'south', 'south', 'southwest', 'southwest', 'west', 'west', 'northwest', 'northwest',
