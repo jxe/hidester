@@ -118,9 +118,9 @@ function rooms(link_from, default_tab){
             if (link_from) link_room_to_room(link_from, new_room);
             else join_room(new_room);
         },
-        room_index_type: [['Global', 'Nearby', 'All'], function (tabname) {
+        room_index_type: [['Global', 'Nearby', 'All'], function (tabname, ev) {
             last_tab_in_rooms = tabname;
-            if (tabname == 'Nearby') return with_loc(function () { rooms(link_from, 'Nearby'); });
+            if (tabname == 'Nearby' && (!curloc || ev)) return with_loc(function () { rooms(link_from, 'Nearby'); });
             reveal('#rooms #rooms_list', 'rooms_list', {
                 rooms_list: [fb('rooms'), function(room_entry){
                     if (!current_user_id) return alert('Please log in with FB! Future version of this software will give you other options.');
