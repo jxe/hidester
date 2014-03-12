@@ -56,12 +56,13 @@ function user_is_in_location_for_room(r){
     if (!curloc) return false;
     if (!r.start_loc) return true;
     var km = distance(r.start_loc[0], r.start_loc[1], curloc[0], curloc[1]);
-    if (km < 1) return true;
+    if (km < 0.015) return true;
 }
 
 function user_has_solved_riddle_for_room(room){
-    if (riddle_answer == room.riddle_a) return true;
-    else return false;
+    if (!room.riddle_a) return true;
+    if (!riddle_answer) return false;
+    return riddle_answer.toLowerCase() == room.riddle_a.toLowerCase();
 }
 
 
@@ -75,6 +76,20 @@ function room_attributes_from_soundcloud_track(data){
         created_at: (new Date()).getTime()
     };
 }
+
+
+function distance_to_room(r) {
+    if (!curloc) return '';
+    if (!r.start_loc) return 'global';
+    var km = distance(r.start_loc[0], r.start_loc[1], curloc[0], curloc[1]);
+    var meters = Math.floor(km*1000);
+    var dist = meters + 'm';
+    if (meters > 1000) dist = Math.floor(meters/100)/10 + 'km';
+    var brng = english_bearing(bearing(curloc[0], curloc[1], r.start_loc[0], r.start_loc[1]));
+    if (meters < 15) return "Here";
+    else return dist + " " + brng;
+}
+
 
 
 function nextSong(room){
@@ -130,17 +145,7 @@ function rooms(link_from, default_tab){
                         if (tabname == 'Nearby') return arr.sort(function (a,b) { return a.km_away - b.km_away; });
                         else return arr;
                     },
-                    '.distance_and_direction': function (r) {
-                        if (!curloc) return '';
-                        if (!r.start_loc) return 'global';
-                        var km = distance(r.start_loc[0], r.start_loc[1], curloc[0], curloc[1]);
-                        var meters = Math.floor(km*1000);
-                        var dist = meters + 'm';
-                        if (meters > 1000) dist = Math.floor(meters/100)/10 + 'km';
-                        var brng = english_bearing(bearing(curloc[0], curloc[1], r.start_loc[0], r.start_loc[1]));
-                        if (meters < 100) return "Here";
-                        else return dist + " " + brng;
-                    },
+                    '.distance_and_direction': distance_to_room,
                     '.indicator': function (r) {
                         if (r.song_title) return "&#9834;";
                         else return "";
@@ -318,17 +323,7 @@ function backlinks(r){
         backlinks: [fb('rooms/%/backlinks', r.id), function(data){
             hop_to_room(data.id);
         }, {
-            '.distance_and_direction': function (r) {
-                if (!curloc) return '';
-                if (!r.start_loc) return 'global';
-                var km = distance(r.start_loc[0], r.start_loc[1], curloc[0], curloc[1]);
-                var meters = Math.floor(km*1000);
-                var dist = meters + 'm';
-                if (meters > 1000) dist = Math.floor(meters/100)/10 + 'km';
-                var brng = english_bearing(bearing(curloc[0], curloc[1], r.start_loc[0], r.start_loc[1]));
-                if (meters < 100) return "Here";
-                else return dist + " " + brng;
-            },
+            '.distance_and_direction': distance_to_room,
             '.indicator': function (r) {
                 if (r.song_title) return "&#9834;";
                 else return "";
