@@ -12,7 +12,7 @@ function with_loc(f){
       alert('Unable to get your location.  Currently this is required.');
     }, {
       timeout: 10*1000,
-      maximumAge: 1000*60*10,
+      maximumAge: 1000*20,
       enableHighAccuracy: true
     }
   );

@@ -1,5 +1,15 @@
 TODO.md
 
+Uh oh.. use
+
+var watchID = navigator.geolocation.watchPosition(function(position) {
+  do_something(position.coords.latitude, position.coords.longitude);
+});
+
+to track location ongoing
+
+
+
 CHECK:  locations and riddles!
 
 - better look for tabs (ios7, touching blue rounded rects with one inverted and bold)
