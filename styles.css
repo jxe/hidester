@@ -139,22 +139,11 @@ float:right;
 	max-height: 12px;
 }
 
-#room_play, #room_settings_play {
+#room_play, #room_settings_play, #room_rewind, #room_settings_rewind, #room_settings_next {
 	border: none;
 	color: red;
 	-webkit-appearance: none;
-}
-
-#room_rewind, #room_settings_rewind {
-	border: none;
-	color: transparent;
-	-webkit-appearance: none;
-}
-
-#room_settings_next {
-	border: none;
-	color: transparent;
-	-webkit-appearance: none;
+	background: black;
 }
 
 a.toggle {

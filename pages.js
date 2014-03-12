@@ -103,7 +103,7 @@ function rooms(link_from, default_tab){
             if (link_from) link_room_to_room(link_from, new_room);
             else join_room(new_room);
         },
-        room_index_type: [['Global', 'Nearby'], function (tabname) {
+        room_index_type: [['Global', 'Nearby', 'All'], function (tabname) {
             last_tab_in_rooms = tabname;
             if (tabname == 'Nearby' && !curloc) return with_loc(function () { rooms(link_from, 'Nearby'); });
             reveal('#rooms #rooms_list', 'rooms_list', {
@@ -117,10 +117,13 @@ function rooms(link_from, default_tab){
                         if (tabname == 'Global') return arr.filter(function (x) {
                             return !x.start_loc && !x.unlisted;
                         });
-                        else return arr.filter(function (r) {
+                        else if (tabname == 'Nearby') return arr.filter(function (r) {
                             if (!r.start_loc || r.unlisted) return false;
                             r.km_away = distance(r.start_loc[0], r.start_loc[1], curloc[0], curloc[1]);
                             return r.km_away < 20;
+                        });
+                        else return arr.filter(function (x) {
+                            return !x.unlisted;
                         });
                     },
                     sort: function (arr) {
