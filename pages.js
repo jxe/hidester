@@ -120,7 +120,7 @@ function rooms(link_from, default_tab){
         },
         room_index_type: [['Global', 'Nearby', 'All'], function (tabname) {
             last_tab_in_rooms = tabname;
-            if (tabname == 'Nearby' && !curloc) return with_loc(function () { rooms(link_from, 'Nearby'); });
+            if (tabname == 'Nearby') return with_loc(function () { rooms(link_from, 'Nearby'); });
             reveal('#rooms #rooms_list', 'rooms_list', {
                 rooms_list: [fb('rooms'), function(room_entry){
                     if (!current_user_id) return alert('Please log in with FB! Future version of this software will give you other options.');

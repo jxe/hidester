@@ -1,13 +1,15 @@
 TODO.md
 
-- nonactive tab looks LAME
-- what are the chrome errors about?
-- mine tab or something
+CHECK:  locations and riddles!
 
+- better look for tabs (ios7, touching blue rounded rects with one inverted and bold)
+- failed > song couldn't load
+- bento box look merging chatroom headerbars (peoplebar, playerbar, titlebar w unlocked label)
+- MINE tab, only shown if you've made a room on this device using localstorage
+- don't say UNDEFINED on settings page
 
-ELA
-- write note to ela
-- tighten checkin radius!!
+- ??whiten unlock icons
+- debug chrome player nonload
 
 
 
