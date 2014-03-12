@@ -1,7 +1,8 @@
 TODO.md
 
-- rewrite buttons to not use background images
-
+- put icons inside UNLOCKED and make them white
+- nonactive tab looks LAME
+- what are the chrome errors about?
 
 ELA
 - set up last two ela stops
@@ -16,7 +17,7 @@ ELA
 
 
 LATER/POLISH
-- claim rooms with no author
+- 'claim' command to claim a room
 - 'choreo posts'
     - chat messages show playhead bar at point they were added
     - playhead returns
