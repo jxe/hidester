@@ -57,6 +57,7 @@ var Player = {
         Player.current.track = track;
         Player.current.indicator = indicator;
         var load_happened = false;
+        if (indicator) indicator('loading');
         setTimeout(function () {
             if (indicator && !load_happened) indicator('load_failed');
         }, 20000);
@@ -65,7 +66,8 @@ var Player = {
             if (!sound || !sound[method]) { console.log(sound); return; }
             Player.current.sound = sound;
             if (indicator){
-                indicator('loading');
+                if (method == 'play') indicator('playing');
+                else indicator('paused');
                 options.onplay=function(){ indicator('playing'); };
                 options.onpause=function(){ indicator('paused'); };
                 options.onresume=function(){ indicator('playing'); };
