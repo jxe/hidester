@@ -56,7 +56,7 @@ function user_is_in_location_for_room(r){
     if (!curloc) return false;
     if (!r.start_loc) return true;
     var km = distance(r.start_loc[0], r.start_loc[1], curloc[0], curloc[1]);
-    if (km < 0.015) return true;
+    if (km < 0.090) return true;
 }
 
 function user_has_solved_riddle_for_room(room){
