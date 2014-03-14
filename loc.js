@@ -6,6 +6,7 @@ var RealtimeLocation = {
     run: function () {
         if (RealtimeLocation.running) return;
         RealtimeLocation.running = navigator.geolocation.watchPosition(function(position) {
+            alert('update received');
             curloc = [ pos.coords.latitude, pos.coords.longitude ];
             store_loc();
             if (RealtimeLocation.listener) RealtimeLocation.listener();
@@ -16,6 +17,7 @@ var RealtimeLocation = {
         }, {
             enableHighAccuracy: true
         });
+        alert('RealtimeLocation running');
     },
 
     addEventListener: function (evname, cb) {
