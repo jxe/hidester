@@ -188,7 +188,7 @@ function player_view(el) {
         if (state == 'paused') el.innerHTML = '<img src="/img/play.png">';
         if (state == 'loading') el.innerHTML = '...';
         if (state == 'load_failed'){
-            el.innerHTML = 'loading failed';
+            el.innerHTML = 'song couldnt load';
             alert('Loading the song failed.  Try exiting the room and reentering, or reloading the site.');
         }
     };
@@ -200,7 +200,7 @@ function unlock_summary(el) {
         if (state == 'paused') el.innerHTML = 'Paused...';
         if (state == 'loading') el.innerHTML = 'Loading the song...';
         if (state == 'load_failed') {
-            el.innerHTML = 'loading failed';
+            el.innerHTML = 'song couldnt load';
             alert('Loading the song failed.  Try exiting the room and reentering, or reloading the site.');
         }
     };

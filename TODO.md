@@ -1,6 +1,10 @@
 TODO.md
 
-Uh oh.. use
+- different startup flow
+- fix right side icon in rooms for room authors
+- tabs are: global/nearby/mine
+- make a room_members page
+
 
 var watchID = navigator.geolocation.watchPosition(function(position) {
   do_something(position.coords.latitude, position.coords.longitude);
@@ -12,8 +16,6 @@ to track location ongoing
 
 CHECK:  locations and riddles!
 
-- better look for tabs (ios7, touching blue rounded rects with one inverted and bold)
-- failed > song couldn't load
 - bento box look merging chatroom headerbars (peoplebar, playerbar, titlebar w unlocked label)
 - MINE tab, only shown if you've made a room on this device using localstorage
 - don't say UNDEFINED on settings page

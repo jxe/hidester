@@ -225,25 +225,39 @@ font-size: 13px;
 	margin-top:10px;
 }
 
+#room_index_type b:first-child {
+	border-top-left-radius: 3px;
+	border-bottom-left-radius: 3px;
+}
+#room_index_type b:last-child {
+	border-top-right-radius: 3px;
+	border-bottom-right-radius: 3px;
+}
+
+
 #room_index_type b {
   padding: 3px 12px;
-  border-radius: 3px;
-  background: #E2CFCF;
-  margin-right: 8px;
-  color:white;
-  text-shadow: black 0px 0px 1px;
+/*  background: #E2CFCF;*/
+/*  margin-right: 8px;*/
+  text-shadow: black 0px 0px 0px;
   font-weight: normal;
   font-size: 14px;
-  box-shadow: black 0px 0px 2px;
+/*  box-shadow: black 0px 0px 2px;*/
   cursor: pointer;
-  line-height: 30px;
+/*  line-height: 30px;*/
+  min-width: 60px;
+  border: solid thin #006383;
+display: inline-block;
+margin-right: -1px;
 }
 #room_index_type b:hover {
+	color:white;
   background: #a3a2a2;
 }
 #room_index_type b.selected {
+	color:white;
 	background: #006383;
-	box-shadow: black 0px 0px 5px;
+/*	box-shadow: black 0px 0px 5px;*/
 }
 
 input.expando {
