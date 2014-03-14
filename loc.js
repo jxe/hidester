@@ -20,10 +20,13 @@ var RealtimeLocation = {
     },
 
     addEventListener: function (evname, cb) {
+        // TODO, keep track of multiple listeners
         RealtimeLocation.listener = cb;
+        if (!RealtimeLocation.running) RealtimeLocation.run();
     },
 
     removeEventListener: function (evname, cb) {
+        // TODO, stop it if this is the only listener
         RealtimeLocation.listener = null;
     }
 };
