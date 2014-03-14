@@ -1,6 +1,35 @@
 // loc.js
 var curloc;
 
+
+var RealtimeLocation = {
+    run: function () {
+        if (RealtimeLocation.running) return;
+        RealtimeLocation.running = navigator.geolocation.watchPosition(function(position) {
+            curloc = [ pos.coords.latitude, pos.coords.longitude ];
+            store_loc();
+            if (RealtimeLocation.listener) RealtimeLocation.listener();
+        }, function (err) {
+            console.warn('ERROR(' + err.code + '): ' + err.message);
+            alert('Unable to get your location.  Currently this is required.');
+        }, {
+            timeout: 10*1000,
+            maximumAge: 1000*20,
+            enableHighAccuracy: true
+        });
+    },
+
+    addEventListener: function (evname, cb) {
+        RealtimeLocation.listener = cb;
+    },
+
+    removeEventListener: function (evname, cb) {
+        RealtimeLocation.listener = null;
+    }
+};
+
+
+
 function with_loc(f){
   navigator.geolocation.getCurrentPosition(
     function(pos){
@@ -17,6 +46,34 @@ function with_loc(f){
     }
   );
 }
+
+function store_loc(){
+  if (curloc){
+    var now = (new Date()).getTime();
+    localStorage['loc'] = JSON.stringify({ loc: curloc, at: now });
+  }
+}
+
+function restore_loc(){
+  var data;
+  if (data = localStorage['loc']){
+    data = JSON.parse(data);
+    var now = (new Date()).getTime();
+    if (now - data.at < 1000*60*6) curloc = data.loc;
+  }
+}
+
+
+restore_loc();
+
+
+
+
+
+
+// distance, bearing, etc
+
+
 
 function distance(lat1,lon1,lat2,lon2) {
   var R = 6371; // Radius of the earth in km
@@ -68,24 +125,3 @@ function bearing(lat1,lon1,lat2,lon2) {
 			//return the angle, normalized
 			return (Math.atan2(diffLon, diffPhi).toDeg() + 360) % 360;
 };
-
-
-
-function store_loc(){
-  if (curloc){
-    var now = (new Date()).getTime();
-    localStorage['loc'] = JSON.stringify({ loc: curloc, at: now });
-  }
-}
-
-function restore_loc(){
-  var data;
-  if (data = localStorage['loc']){
-    data = JSON.parse(data);
-    var now = (new Date()).getTime();
-    if (now - data.at < 1000*60*6) curloc = data.loc;
-  }
-}
-
-
-restore_loc();
