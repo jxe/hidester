@@ -10,9 +10,10 @@
 	window.firewidget = function(a, b){
 		if (!a.trim) { for (var x in a) firewidget(x, a[x]); return; }
 		firewidget.unsub(sub_scope = a);
-		var els = document.getElementById(a) || document.querySelectorAll(a) || alert(a + " not found.");
+		var els = document.getElementById(a) || document.querySelectorAll(a);
 		if (!b || !b.sort) b = [b];
-		if (!els.length) els = [els];
+		if (els.length === undefined) els = [els];
+		if (!els[0]) return alert(a + " not found.");
 		for (var el_i = els.length - 1; el_i >= 0; el_i--) {
 			var el = els[el_i];
 			for (var i = el.classList.length - 1; i >= 0; i--) {
@@ -52,6 +53,7 @@
 			else if (shown) el.style.display = '';
 		},
 		simple_button: function(el, does, shown){
+			console.log(el, 'shown', shown);
 			if (shown !== undefined && !shown) el.style.display = 'none';
 			else if (shown) el.style.display = '';
 			firewidget.sub(el, 'click', function (ev) { ev.preventDefault(); does(); return false; });

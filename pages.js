@@ -23,6 +23,11 @@ var genres = "80s, ambient, americana, avantgarde, blues, chiptunes, choir, elec
 
 // functions
 
+function values(obj){
+    if (!obj) return [];
+    return Object.keys(obj).map(function(x){ obj[x].id = x; return obj[x]; });
+}
+
 function hop_to_room(room_id, fn) {
     if (!fn) fn = 'unlock_page';
     fb('rooms/%', room_id).once('value', function (snap) {
@@ -183,10 +188,10 @@ function player_view(el) {
         if (state == 'paused') el.innerHTML = '<img src="/img/play.png">';
         if (state == 'loading') el.innerHTML = '...';
         if (state == 'load_failed'){
-            el.innerHTML = 'failed';
+            el.innerHTML = 'loading failed';
             alert('Loading the song failed.  Try exiting the room and reentering, or reloading the site.');
         }
-    }
+    };
 }
 
 function unlock_summary(el) {
@@ -195,10 +200,10 @@ function unlock_summary(el) {
         if (state == 'paused') el.innerHTML = 'Paused...';
         if (state == 'loading') el.innerHTML = 'Loading the song...';
         if (state == 'load_failed') {
-            el.innerHTML = 'failed';
+            el.innerHTML = 'loading failed';
             alert('Loading the song failed.  Try exiting the room and reentering, or reloading the site.');
         }
-    }
+    };
 }
 
 
@@ -342,14 +347,18 @@ function show_room(r){
         r.song_title && '<img src="img/note.png">',
         r.riddle_q && '<img src="img/puzzle.png">'
     ]);
+    console.log('backlinks', r.backlinks||false);
     reveal('.page', 'show_room', {
         '.player': r.song_title,
         go_rooms: rooms,
-        go_backlinks: [function () { backlinks(r); }, r.backlinks],
+        room_backlinks_div: [function () { backlinks(r); }, r.backlinks || false],
+        room_backlinks_count: Object.keys(r.backlinks||{}).length,
+        room_author_note: [function () { room_settings(r); }, r.author == current_user_id],
         room_play: function(){
             if (Player.current.sound) return Player.current.sound.togglePause();
             else return alert('No current sound');
         },
+        room_song_title: r.song_title,
         room_rewind: function(){
             if (Player.current.sound) Player.current.sound.setPosition(0);
         },
@@ -358,11 +367,7 @@ function show_room(r){
         edit_settings: function(){
             if (r.author == current_user_id) room_settings(r);
         },
-        room_members: [fb('rooms/%/members', r.id), null, {
-            '.photo_url': function(member){
-                return "http://graph.facebook.com/" + member.facebook_id + '/picture';
-            }
-        }],
+        room_member_names: values(r.members).map(function (x) { return x.name; }).join(', '),
         room_messages: [fb('room_messages/%', r.id), function(msg){
             hop_to_room(msg.link);
         }, {
