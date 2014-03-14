@@ -203,11 +203,10 @@ function player_view(el) {
 function unlock_summary(el) {
     return function(state){
         if (state == 'playing') el.innerHTML = 'Playing... you will enter the room momentarily.';
-        if (state == 'paused') el.innerHTML = 'Paused...';
+        if (state == 'paused') el.innerHTML = '';
         if (state == 'loading') el.innerHTML = 'Loading the song...';
         if (state == 'load_failed') {
-            el.innerHTML = 'song couldnt load';
-            alert('Loading the song failed.  Try exiting the room and reentering, or reloading the site.');
+            el.innerHTML = 'Uh oh, the song couldn\'t load. Try exiting the room and reentering, or reloading the site.';
         }
     };
 }
