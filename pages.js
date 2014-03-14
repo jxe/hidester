@@ -129,7 +129,7 @@ function rooms(link_from, default_tab){
             reveal('#rooms #rooms_list', 'rooms_list', {
                 '#rooms': function (el, sub) {
                     sub(RealtimeLocation, 'changed', function () {
-                        alert('updating all distances');
+                        // alert('updating all distances');
                         document.getElementById('rooms_list').redraw();
                     });
                 },
@@ -425,7 +425,7 @@ function unlock_page(r){
             if (next_step != 'check_location') return el.innerHTML = '';
             el.innerHTML = distance_to_room(r);
             sub(RealtimeLocation, 'changed', function () {
-                alert('updating distances');
+                // alert('updating distances');
                 el.innerHTML = distance_to_room(r);
             });
         },

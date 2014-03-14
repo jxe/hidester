@@ -5,12 +5,12 @@ var curloc;
 var RealtimeLocation = {
     run: function () {
         if (RealtimeLocation.running) return;
-        RealtimeLocation.running = navigator.geolocation.watchPosition(function(position) {
+        RealtimeLocation.running = navigator.geolocation.watchPosition(function(pos) {
             // alert('update received');
             curloc = [ pos.coords.latitude, pos.coords.longitude ];
-            store_loc();
+            // store_loc();
             if (RealtimeLocation.listener) RealtimeLocation.listener();
-            else alert('RealtimeLocation running but no listener.');
+            // else alert('RealtimeLocation running but no listener.');
         }, function (err) {
             console.warn('ERROR(' + err.code + '): ' + err.message);
             alert('Error with realtime location.');
@@ -18,18 +18,18 @@ var RealtimeLocation = {
             enableHighAccuracy: true,
             maximumAge: 1000*5
         });
-        alert('RealtimeLocation running');
+        // alert('RealtimeLocation running');
     },
 
     addEventListener: function (evname, cb) {
         // TODO, keep track of multiple listeners
-        alert('RealtimeLocation listener registered.');
+        // alert('RealtimeLocation listener registered.');
         RealtimeLocation.listener = cb;
         if (!RealtimeLocation.running) RealtimeLocation.run();
     },
 
     removeEventListener: function (evname, cb) {
-        alert('RealtimeLocation listener unregistered.');
+        // alert('RealtimeLocation listener unregistered.');
         // TODO, stop it if this is the only listener
         RealtimeLocation.listener = null;
     }
