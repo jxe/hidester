@@ -128,7 +128,10 @@ function rooms(link_from, default_tab){
             if (tabname == 'Nearby' && (!curloc || ev)) return with_loc(function () { rooms(link_from, 'Nearby'); });
             reveal('#rooms #rooms_list', 'rooms_list', {
                 '#rooms': function (el, sub) {
-                    sub(RealtimeLocation, 'changed', function () { document.getElementById('rooms_list').redraw(); });
+                    sub(RealtimeLocation, 'changed', function () {
+                        alert('updating all distances');
+                        document.getElementById('rooms_list').redraw();
+                    });
                 },
                 rooms_list: [fb('rooms'), function(room_entry){
                     if (!current_user_id) return alert('Please log in with FB! Future version of this software will give you other options.');
@@ -422,6 +425,7 @@ function unlock_page(r){
             if (next_step != 'check_location') return el.innerHTML = '';
             el.innerHTML = distance_to_room(r);
             sub(RealtimeLocation, 'changed', function () {
+                alert('updating distances');
                 el.innerHTML = distance_to_room(r);
             });
         },

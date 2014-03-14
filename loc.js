@@ -9,23 +9,24 @@ var RealtimeLocation = {
             curloc = [ pos.coords.latitude, pos.coords.longitude ];
             store_loc();
             if (RealtimeLocation.listener) RealtimeLocation.listener();
+            else alert('RealtimeLocation running but no listener.');
         }, function (err) {
             console.warn('ERROR(' + err.code + '): ' + err.message);
-            alert('Unable to get your location.  Currently this is required.');
+            alert('Error with realtime location.');
         }, {
-            timeout: 10*1000,
-            maximumAge: 1000*20,
             enableHighAccuracy: true
         });
     },
 
     addEventListener: function (evname, cb) {
         // TODO, keep track of multiple listeners
+        alert('RealtimeLocation listener registered.');
         RealtimeLocation.listener = cb;
         if (!RealtimeLocation.running) RealtimeLocation.run();
     },
 
     removeEventListener: function (evname, cb) {
+        alert('RealtimeLocation listener unregistered.');
         // TODO, stop it if this is the only listener
         RealtimeLocation.listener = null;
     }
