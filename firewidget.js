@@ -15,11 +15,12 @@
 		if (els.length === undefined) els = [els];
 		if (!els[0]) return alert(a + " not found.");
 		for (var el_i = els.length - 1; el_i >= 0; el_i--) {
-			var el = els[el_i];
-			for (var i = el.classList.length - 1; i >= 0; i--) {
+			var el = els[el_i], found = false;
+			for (var i = el.classList.length - 1; !found && i >= 0; i--) {
 				var c = firewidget.widgets[ el.classList[i] ];
-				if (c) c(el, b[0], b[1], b[2], b[3], b[4]);
+				if (c) { found = true; c(el, b[0], b[1], b[2], b[3], b[4]); }
 			}
+			if (!found) b[0](el, firewidget.sub);
 		}
 	};
 	firewidget.sub = function(ref, ev, f){
@@ -142,33 +143,39 @@ function mikrotemplate(el, obj_or_array, id_pfx){
 		return Object.keys(obj).map(function(x){ obj[x].id = x; return obj[x]; });
 	}
 
-	w.fbobjlist = function(el, ref, onclick, options, id_pfx){
+	w.fbobjlist = function(el, ref, onclick, options){
 		if (!options) options = {};
-		var id_pfd = options.id_pfx || '';
-		sub(ref, 'value', function(snap){
-			var value = snap.val();
-			var array = value ? values(value) : [];
+		var id_prefix = options.id_prefix || '';
+		el.redraw = function(){ el.render(el.data); };
+		el.render = function (array) {
+			el.data = array;
 			if (options.filter) array = options.filter(array);
 			if (options.sort)   array = options.sort(array);
 			array.forEach(function(o){
 				for (var opt in options){
-					if (opt[0] == '.'){
-						var k = opt.slice(1);
-						o[k] = options[opt](o, function(v){
-							var item = document.getElementById(id_pfx + o.id);
-							o[k] = v;
-							mikrotemplate(item, o, id_pfx);
-						});
-					}
+					if (opt[0] == '.') o[opt.slice(1)] = options[opt](o, el);
 				}
 			});
-			mikrotemplate(el, array, id_pfx);
-			if (!onclick) return;
-			var children = el.childNodes;
-			var f = function(ev){ onclick( this.data, ev, this ); };
-			for (var i = children.length - 1; i >= 0; i--) children[i].onclick = f;
-		});
+			mikrotemplate(el, array, id_prefix);
+			if (onclick) {
+				var children = el.childNodes;
+				var f = function(ev){ onclick( this.data, ev, this ); };
+				for (var i = children.length - 1; i >= 0; i--) children[i].onclick = f;
+			}
+		};
+		el.update_row = function (o) {
+			var item = document.getElementById(id_prefix + o.id);
+			mikrotemplate(item, o, id_prefix);
+		};
+		el.set_row_value = function (o, k, v) {
+			var item = document.getElementById(id_prefix + o.id);
+			o = item.data;
+			o[k] = v;
+			mikrotemplate(item, o, id_prefix);
+		};
+		sub(ref, 'value', function(snap){ el.render(values(snap.val())); });
 	};
+
 
 	w.fbobj = function(el, ref, calcfns){
 		sub(ref, 'value', function(snap){
