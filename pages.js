@@ -127,6 +127,9 @@ function rooms(link_from, default_tab){
             last_tab_in_rooms = tabname;
             if (tabname == 'Nearby' && (!curloc || ev)) return with_loc(function () { rooms(link_from, 'Nearby'); });
             reveal('#rooms #rooms_list', 'rooms_list', {
+                '#rooms': function (el, sub) {
+                    sub(RealtimeLocation, 'changed', function () { document.getElementById('rooms_list').redraw(); });
+                },
                 rooms_list: [fb('rooms'), function(room_entry){
                     if (!current_user_id) return alert('Please log in with FB! Future version of this software will give you other options.');
                     if (link_from) return link_room_to_room(link_from, room_entry);
@@ -415,6 +418,13 @@ function unlock_page(r){
     if (!next_step) return join_room(r);
 
     reveal('.page', 'unlock_page', {
+        distance_div: function (el, sub) {
+            if (next_step != 'check_location') return el.innerHTML = '';
+            el.innerHTML = distance_to_room(r);
+            sub(RealtimeLocation, 'changed', function () {
+                el.innerHTML = distance_to_room(r);
+            });
+        },
         go_other_rooms: rooms,
         unlock_room_title: r.title || 'Unnamed Room',
         remaining_requirements: conjoin(remaining_requirements),
@@ -423,7 +433,7 @@ function unlock_page(r){
             if (next_step == 'check_location'){
                 with_loc(function(loc){
                     if (user_is_in_location_for_room(r)) unlock_page(r);
-                    else alert('not close enough');
+                    else alert('You\'re not close enough to unlock this.');
                 });
             } else if (next_step == 'answer_riddle'){
                 riddle_answer = prompt(r.riddle_q);
