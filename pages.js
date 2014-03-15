@@ -123,15 +123,12 @@ function rooms(link_from, default_tab){
             if (link_from) link_room_to_room(link_from, new_room);
             else join_room(new_room);
         },
-        room_index_type: [['Global', 'Nearby', 'All'], function (tabname, ev) {
+        room_index_type: [['Global', 'Nearby', 'Active'], function (tabname, ev) {
             last_tab_in_rooms = tabname;
             if (tabname == 'Nearby' && (!curloc || ev)) return with_loc(function () { rooms(link_from, 'Nearby'); });
             reveal('#rooms #rooms_list', 'rooms_list', {
                 '#rooms': function (el, sub) {
-                    sub(RealtimeLocation, 'changed', function () {
-                        // alert('updating all distances');
-                        document.getElementById('rooms_list').redraw();
-                    });
+                    sub(RealtimeLocation, 'changed', function () { document.getElementById('rooms_list').redraw(); });
                 },
                 rooms_list: [fb('rooms'), function(room_entry){
                     if (!current_user_id) return alert('Please log in with FB! Future version of this software will give you other options.');
@@ -148,15 +145,24 @@ function rooms(link_from, default_tab){
                             r.km_away = distance(r.start_loc[0], r.start_loc[1], curloc[0], curloc[1]);
                             return r.km_away < 20;
                         });
-                        else return arr.filter(function (x) {
-                            return !x.unlisted;
-                        });
+                        else {
+                            var now = (new Date().getTime());
+                            return arr.filter(function (x) {
+                                if (x.unlisted && (!x.members || !x.members[current_user_id])) return false;
+                                if (!x.mtime || (now - x.mtime > 1000*60*60*24*1)) return false;
+                                return true;
+                            });
+                        }
                     },
                     sort: function (arr) {
                         if (tabname == 'Nearby') return arr.sort(function (a,b) { return a.km_away - b.km_away; });
+                        else if (tabname == 'Active') return arr.sort(function (a,b) { return (b.mtime||0) - (a.mtime||0); });
                         else return arr;
                     },
                     '.distance_and_direction': distance_to_room,
+                    '.guardedtitle': function (r) {
+                        return r.title || 'New Room';
+                    },
                     '.indicator': function (r) {
                         if (r.song_title) return "&#9834;";
                         else return "";
@@ -389,6 +395,7 @@ function show_room(r){
             };
             if (Player.current.sound) msg.t = Player.current.sound.position / 1000;
             fb('room_messages/%', r.id).push(msg);
+            fb('rooms/%/mtime', r.id).set(Firebase.ServerValue.TIMESTAMP);
         },
         room_link: function () { rooms(r); }
     });
