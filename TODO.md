@@ -1,18 +1,21 @@
 TODO.md
 
-
-NEW ROOM FLOW
-- When I create a new room and choose "listen to a song," and I click on a genre...is it possible to make it apparent that I have selected something? As of now, it doesn't get highlighted or anything so it feels like nothing happened. Maybe there could be a button that says "done" or "save room" instead of just "back" ?
-
-
 LINK FLOW
 - clarify what linking is, both in room and on link index page
 
-
 INSIDE ROOMS
-- fix right side icon in rooms for room authors... lock icon and it goes to settings
 - How do I invite people to an existing room?
-- ??whiten unlock icons
+
+CHOREO
+
+CHOOSE A SONG FUNCTIONALITY
+- choose a song page should have a player and have a "USE THIS SONG" button
+- room settings does not have player or ff
+- When I create a new room and choose "listen to a song," and I click on a genre...
+    is it possible to make it apparent that I have selected something?
+    As of now, it doesn't get highlighted or anything so it feels like nothing happened.
+    Maybe there could be a button that says "done" or "save room" instead of just "back" ?
+
 
 
 - Also, how would you like to highlight the wesleyan channel that i created?

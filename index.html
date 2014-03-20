@@ -15,15 +15,15 @@
 	<div class="panel" id="login">
 		<button>Create a profile by linking facebook</button> in order to join rooms or make new rooms.
 	</div>
-	<div class="sticky panel">
-		<h3 class="simple_hidable" id="index_header">
-			<b>Many Secret Doors</b> is a place to make secret rooms.
-			If you make a room, the only people who can join it are those who visit a particular spot,
-			or who listen to a song you choose,
-			or who can answer a riddle.
+	<div class="info panel">
+		<b>Many Secret Doors</b> is a place to make secret rooms.
+		If you make a room, the only people who can join it are those who visit a particular spot,
+		or who listen to a song you choose,
+		or who can answer a riddle.
 
-			<p>You can connect the rooms together to make scavenger hunts, playlists, secret clubs... whatever you're into.</p>
-		</h3>
+		<p>You can connect the rooms together to make scavenger hunts, playlists, secret clubs... whatever you're into.</p>
+	</div>
+	<div class="panel">
 		<button class="simple_button" id="go_nearby">Show nearby rooms</button>
 	</div>
 </div>
@@ -31,21 +31,24 @@
 <div class="page" id="rooms">
 	<header>
 		<button class="simple_button" id="rooms_back">Back</button>
-		<h1 class="expando">Many Secret Doors</h1>
+		<h1 class="expando simple_label" id="rooms_title">Many Secret Doors</h1>
 		<button class="simple_button room_create"><big>+</big></button>
 	</header>
-	<div class="panel sticky simple_hidable" id="backlink_header">
-		<h3>Pick a room to link to</h3>
+
+	<div class="info panel simple_hidable" id="backlink_header">
+		Add a message that points to another room or to a new room you create.
+		By linking room to room, you can make scavenger hunts, tours, or mixtapes.
 	</div>
 
-	<div class="panel sticky simple_hidable" id="non_backlink_header">
-		<h3>Choose a room near you, or create your own and invite friends.</h3>
+	<div class="info panel simple_hidable" id="non_backlink_header">
+		Choose a room near you, or create your own and invite friends.
 	</div>
 
 	<div class="simple_tabs" id="room_index_type">
 		<b data-set="text:name"></b>
 	</div>
-	<div class="white panel centered fbobjlist" id="rooms_list">
+
+	<div class="white panel centered fbobjlist expando" id="rooms_list">
 		<div class="room_card">
 			<div class="room_tile">
 				<i data-set="text:distance_and_direction"></i>
@@ -56,7 +59,7 @@
 		</div>
 	</div>
 	<div class="panel">
-		<button class="simple_button room_create">Create your own room!</button>
+		<button class="simple_button room_create">Create a new room</button>
 	</div>
 </div>
 
@@ -98,8 +101,8 @@
 	<header>
 		<button id="go_backlinks_room" class="header_back_button simple_button">Back</button>
 	</header>
-	<div class="panel">
-		<h3>Rooms that link to this room</h3>
+	<div class="info panel">
+		Rooms that link to this room
 	</div>
 	<div class="white panel centered fbobjlist" id="backlinks">
 		<div class="room_card">
@@ -118,11 +121,12 @@
 <div class="page" id="show_room">
 	<header>
 		<button id="go_rooms" class="header_back_button simple_button"><big>&larr;</big></button>
-		<h1 class="simple_button" id="edit_settings">
+		<h1 class="simple_button edit_settings">
 			<span id="room_title" class="simple_label"></span>
 			<small id="room_member_names" class="simple_label"></small>
 		</h1>
-		<button class="header_right_button">
+		<button class="simple_button edit_settings">
+			<span id="room_lock_icon" class="simple_label"></span>
 			<span id="room_requires" class="simple_label"></span>
 		</button>
 	</header>
@@ -139,7 +143,8 @@
 		</div>
 
 		<div id="room_author_note" class="simple_button message">
-			This is your room.  <button>Edit the steps required to access it &raquo;</button>
+			This is your room.  Access <span class="simple_label" id="room_text_reqs"></span>.
+			<button>You can <span class="simple_label" id="room_author_also_note"></span> &raquo;</button>
 		</div>
 
 		<div id="room_messages" class="expando fbobjlist">
@@ -151,9 +156,14 @@
 		</div>
 	</div>
 	<form class="panel row">
-		<input class="simple_input expando" id="message_add" placeholder="say what">
-		<button type='button' id="room_link" class="simple_button">Link</button>
+		<button type='button' class="simple_button toggle_room_add_options">&uarr;</button>
+		<input class="simple_input expando" id="message_add">
 	</form>
+	<div id="room_add_options" class="simple_hidable panel row">
+		<button id="room_link" class="simple_button">Make a link to another room</button>
+		<button id="add_choreo" class="simple_button">Add some choreography</button>
+		<a href="#" class="closex simple_button toggle_room_add_options">x</a>
+	</div>
 </div>
 
 
@@ -174,7 +184,7 @@
 <div class="page" id="room_settings">
 	<header>
 		<button id="commands" class="simple_button header_right_button"><img src="/img/settings.png" /></button>
-		<h1>Room Access</h1>
+		<h1>This Room</h1>
 		<button class="header_back_button simple_button" id="go_room">Done</button>
 	</header>
 
