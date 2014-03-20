@@ -1,8 +1,6 @@
 <title>Many Secret Doors</title>
 <link rel="stylesheet" type="text/css" href="styles.css">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" />
-<!-- <meta name="apple-mobile-web-app-capable" content="yes" /> -->
-<!-- <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" /> -->
 <link rel="apple-touch-icon-precomposed" href="icon.jpg" />
 
 
@@ -10,21 +8,40 @@
 
 <!-- pages -->
 
-<div class="page" id="rooms">
+<div class="page" id="welcome_page">
 	<header>
-		<button class="simple_button" id="rooms_back">back</button>
 		<h1 class="expando">Many Secret Doors</h1>
-		<button class="simple_button" id="room_create"><big>+</big></button>
 	</header>
 	<div class="panel" id="login">
 		<button>Create a profile by linking facebook</button> in order to join rooms or make new rooms.
 	</div>
 	<div class="sticky panel">
-		<h3 class="simple_hidable" id="backlink_header">Pick a room to link to</h3>
 		<h3 class="simple_hidable" id="index_header">
-			These are unlockable chatrooms.  Try looking for one nearby.
+			<b>Many Secret Doors</b> is a place to make secret rooms.
+			If you make a room, the only people who can join it are those who visit a particular spot,
+			or who listen to a song you choose,
+			or who can answer a riddle.
+
+			<p>You can connect the rooms together to make scavenger hunts, playlists, secret clubs... whatever you're into.</p>
 		</h3>
+		<button class="simple_button" id="go_nearby">Show nearby rooms</button>
 	</div>
+</div>
+
+<div class="page" id="rooms">
+	<header>
+		<button class="simple_button" id="rooms_back">Back</button>
+		<h1 class="expando">Many Secret Doors</h1>
+		<button class="simple_button room_create"><big>+</big></button>
+	</header>
+	<div class="panel sticky simple_hidable" id="backlink_header">
+		<h3>Pick a room to link to</h3>
+	</div>
+
+	<div class="panel sticky simple_hidable" id="non_backlink_header">
+		<h3>Choose a room near you, or create your own and invite friends.</h3>
+	</div>
+
 	<div class="simple_tabs" id="room_index_type">
 		<b data-set="text:name"></b>
 	</div>
@@ -37,6 +54,9 @@
 			</div>
 			<div class="members_text" data-set="text:members_text"></div>
 		</div>
+	</div>
+	<div class="panel">
+		<button class="simple_button room_create">Create your own room!</button>
 	</div>
 </div>
 
@@ -54,7 +74,8 @@
 
 <div class="page" id="choose_song">
 	<header>
-		<button class="simple_button" id="go_room_settings">back</button>
+		<h1>Choose a song</h1>
+		<button class="simple_button" id="go_room_settings">Done</button>
 	</header>
 	<div class="panel">
 		<form> <input type="search" id="search_input" class="simple_input" placeholder="search for a song" /> </form>
@@ -118,7 +139,7 @@
 		</div>
 
 		<div id="room_author_note" class="simple_button message">
-			This is your room.  <span class="action">Make challenges for those who want to join &raquo;</span>
+			This is your room.  <button>Edit the steps required to access it &raquo;</button>
 		</div>
 
 		<div id="room_messages" class="expando fbobjlist">
@@ -136,10 +157,25 @@
 </div>
 
 
+<div class="page" id="new_room">
+	<header>
+		<button class="header_back_button simple_button" id="new_room_go_rooms">back</button>
+		<h1> New Room </h1>
+	</header>
+	<div class="panel">
+		<h3>Who should be able to access your new room?</h3>
+		<button class="simple_button" id="new_room_location">People near where I am now</button>
+		<button class="simple_button" id="new_room_song">People who listen to a song</button>
+		<button class="simple_button" id="new_room_riddle">People who answer a riddle</button>
+	</div>
+</div>
+
+
 <div class="page" id="room_settings">
 	<header>
-		<button class="header_back_button simple_button" id="go_room">back</button>
 		<button id="commands" class="simple_button header_right_button"><img src="/img/settings.png" /></button>
+		<h1>Room Access</h1>
+		<button class="header_back_button simple_button" id="go_room">Done</button>
 	</header>
 
 	<div class="player row panel simple_hidable">
@@ -184,7 +220,7 @@
 
 <div class="page" id="unlock_page">
 	<header>
-		<button id="go_other_rooms" class="simple_button">Other rooms</button>
+		<button id="go_other_rooms" class="simple_button">Back</button>
 	</header>
 	<div class="panel">
 		<h2 id="unlock_room_title" class="simple_label"></h2>

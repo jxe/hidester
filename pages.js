@@ -110,20 +110,66 @@ function nextSong(room){
 
 var last_tab_in_rooms;
 
+function welcome_page(){
+    reveal('.page', 'welcome_page', {
+        go_nearby: function () {
+            return with_loc(function () { rooms(null, 'Nearby'); });
+        }
+    });
+}
+
+function new_room(link_from){
+    reveal('.page', 'new_room', {
+        new_room_go_rooms: function () { rooms(link_from, last_tab_in_rooms); },
+        new_room_location: function () {
+            var new_room = create_room(link_from);
+            with_loc(function(loc){
+                fb('rooms/%', new_room.id).update({ start_loc: [loc.coords.latitude, loc.coords.longitude] });
+                room_settings(new_room);
+            });
+        },
+        new_room_song: function () {
+            var new_room = create_room(link_from);
+            choose_song(new_room);
+        },
+        new_room_riddle: function () {
+            var r = create_room(link_from);
+            if (r.riddle_q) return fb('rooms/%/riddle_q', r.id).remove();
+            var q = prompt('What question to you want answered?');
+            if (!q) return;
+            var a = prompt('What\'s the answer?');
+            if (!a) return;
+            fb('rooms/%', r.id).update({ riddle_q: q, riddle_a: a });
+            room_settings(r);
+        }
+    });
+}
+
+function create_room(link_from){
+    if (!current_user_id) return alert('Please log in with FB!  Future version of this software will give you other options.');
+    var new_room = { author: current_user_id };
+    new_room.id = fb('rooms').push(new_room).name();
+    if (link_from) link_room_to_room(link_from, new_room);
+    else join_room(new_room);
+    return new_room;
+}
+
 function rooms(link_from, default_tab){
     reveal('.page', 'rooms', {
         backlink_header: link_from,
+        non_backlink_header: !link_from,
         rooms_back: [function () {
             show_room(link_from);
         }, !!link_from],
-        room_create: function(){
-            if (!current_user_id) return alert('Please log in with FB!  Future version of this software will give you other options.');
-            var new_room = { author: current_user_id };
-            new_room.id = fb('rooms').push(new_room).name();
-            if (link_from) link_room_to_room(link_from, new_room);
-            else join_room(new_room);
+        '.room_create': function(){
+            return new_room(link_from);
+            // if (!current_user_id) return alert('Please log in with FB!  Future version of this software will give you other options.');
+            // var new_room = { author: current_user_id };
+            // new_room.id = fb('rooms').push(new_room).name();
+            // if (link_from) link_room_to_room(link_from, new_room);
+            // else join_room(new_room);
         },
-        room_index_type: [['Global', 'Nearby', 'Active'], function (tabname, ev) {
+        room_index_type: [['Nearby', 'Active', 'Anywhere'], function (tabname, ev) {
             last_tab_in_rooms = tabname;
             if (tabname == 'Nearby' && (!curloc || ev)) return with_loc(function () { rooms(link_from, 'Nearby'); });
             reveal('#rooms #rooms_list', 'rooms_list', {
@@ -137,7 +183,7 @@ function rooms(link_from, default_tab){
                     else unlock_page(room_entry);
                 }, {
                     filter: function (arr) {
-                        if (tabname == 'Global') return arr.filter(function (x) {
+                        if (tabname == 'Anywhere') return arr.filter(function (x) {
                             return !x.start_loc && !x.unlisted;
                         });
                         else if (tabname == 'Nearby') return arr.filter(function (r) {
@@ -174,7 +220,7 @@ function rooms(link_from, default_tab){
                     }
                 }],
             });
-        }, default_tab || last_tab_in_rooms || 'Global']
+        }, default_tab || last_tab_in_rooms || 'Anywhere']
     });
 }
 
@@ -467,4 +513,4 @@ function unlock_page(r){
 
 
 
-rooms();
+welcome_page();

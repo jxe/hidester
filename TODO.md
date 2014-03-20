@@ -1,17 +1,38 @@
 TODO.md
 
-- room_messages updates priority on room
-- tabs are: global/nearby/active
 
-- different startup flow
+NEW ROOM FLOW
+- When I create a new room and choose "listen to a song," and I click on a genre...is it possible to make it apparent that I have selected something? As of now, it doesn't get highlighted or anything so it feels like nothing happened. Maybe there could be a button that says "done" or "save room" instead of just "back" ?
+
+
+LINK FLOW
+- clarify what linking is, both in room and on link index page
+
+
+INSIDE ROOMS
+- fix right side icon in rooms for room authors... lock icon and it goes to settings
+- How do I invite people to an existing room?
+- ??whiten unlock icons
+
+
+- Also, how would you like to highlight the wesleyan channel that i created?
+
+- debug on android
+
+
+STARTUP FLOW
+- don't always go to #welcome_page
+- handle welcome & fb more elegantly
+- remove FB requirement
+
+
+- room_messages updates priority on room
+
 - simple ios7 teal color scheme everywhere
 
 - MINE tab, only shown if you've made a room on this device using localstorage
 
-- new room create flow
-- fix right side icon in rooms for room authors... lock icon and it goes to settings
 - don't say UNDEFINED on settings page
-- ??whiten unlock icons
 
 - make a room_members page
 - a version of room settings for nonauthors, or just the commands
