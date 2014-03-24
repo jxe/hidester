@@ -55,7 +55,9 @@ var Player = {
         if (!options) options = {};
         if (Player.current.track) Player.clear();
         Player.current.track = track;
-        Player.current.indicator = indicator;
+        if (indicator) Player.current.indicator = indicator;
+        else indicator = Player.current.indicator;
+        Player.current.title = options.title;
         var load_happened = false;
         if (indicator) indicator('loading');
         setTimeout(function () {

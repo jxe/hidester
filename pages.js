@@ -1,7 +1,8 @@
 
 // set up firebase
 function login(){ auth.login('facebook', { rememberMe: true }); }
-document.getElementById('login').onclick = login;
+var login_el = document.getElementById('login');
+if (login_el) login_el.onclick = login;
 if (navigator.standalone) document.getElementsByTagName('body')[0].className = 'standalone';
 
 
@@ -49,13 +50,6 @@ function compact(arr){
     return arr.filter(function(x){ return x; });
 }
 
-function join_room(r){
-    fb('rooms/%/members/%', r.id, current_user_id).set({
-        name: short_name(),
-        facebook_id: facebook_id
-    });
-    show_room(r);
-}
 
 function user_is_in_location_for_room(r){
     if (!curloc) return false;
@@ -101,7 +95,7 @@ function nextSong(room){
     if (!playlist || playlist.errors || playlist.length === 0) return;
     var data = playlist.pop();
     fb('rooms/%', room.id).update(room_attributes_from_soundcloud_track(data));
-    Player.stream('play', "/tracks/" + data.id);
+    Player.stream('play', "/tracks/" + data.id, null, data);
 }
 
 
@@ -146,13 +140,34 @@ function new_room(link_from){
 }
 
 function create_room(link_from){
-    if (!current_user_id) return alert('Please log in with FB!  Future version of this software will give you other options.');
+   if (!current_user_id) {
+      alert('In order to create a chat room, we need to grab your name and profile pic from facebook. We don\'t post anything to facebook!');
+      return with_user(function(){ create_room(link_from); });
+   }
     var new_room = { author: current_user_id };
     new_room.id = fb('rooms').push(new_room).name();
     if (link_from) link_room_to_room(link_from, new_room);
     else join_room(new_room);
     return new_room;
 }
+
+function join_room(r){
+   if (!current_user_id) {
+      alert('In order to join a chat room, we need to grab your name and profile pic from facebook. We don\'t post anything to facebook!');
+      return with_user(function(){ join_room(r); });
+   }
+    fb('rooms/%/members/%', r.id, current_user_id).set({
+        name: short_name(),
+        facebook_id: facebook_id
+    });
+    show_room(r);
+}
+
+function go_to_room(room_entry){
+     if (current_user_id && room_entry.members && room_entry.members[current_user_id]) show_room(room_entry);
+     else unlock_page(room_entry);
+}
+
 
 function rooms(link_from, default_tab){
     reveal('.page', 'rooms', {
@@ -173,10 +188,8 @@ function rooms(link_from, default_tab){
                     sub(RealtimeLocation, 'changed', function () { document.getElementById('rooms_list').redraw(); });
                 },
                 rooms_list: [fb('rooms'), function(room_entry){
-                    if (!current_user_id) return alert('Please log in with FB! Future version of this software will give you other options.');
                     if (link_from) return link_room_to_room(link_from, room_entry);
-                    if (room_entry.members && room_entry.members[current_user_id]) show_room(room_entry);
-                    else unlock_page(room_entry);
+                    go_to_room(room_entry);
                 }, {
                     filter: function (arr) {
                         if (tabname == 'Anywhere') return arr.filter(function (x) {
@@ -236,6 +249,20 @@ function link_room_to_room(r, link_to_room) {
 }
 
 
+function songname_player_view(el, label_el) {
+    return function(state){
+       var s = Player.current;
+       if (s.title && label_el) label_el.innerHTML = s.title;
+        if (state == 'playing') el.innerHTML = '<img src="/img/pause.png">';
+        if (state == 'paused') el.innerHTML = '<img src="/img/play.png">';
+        if (state == 'loading') el.innerHTML = '...';
+        if (state == 'load_failed'){
+            el.innerHTML = 'song couldnt load';
+            alert('Loading the song failed.  Try exiting the room and reentering, or reloading the site.');
+        }
+    };
+}
+
 function player_view(el) {
     return function(state){
         if (state == 'playing') el.innerHTML = '<img src="/img/pause.png">';
@@ -262,21 +289,7 @@ function unlock_summary(el) {
 
 
 function room_settings(r){
-    var indicator = document.getElementById('room_settings_play');
-    if (r.soundcloud_url) Player.stream('load', r.soundcloud_url, player_view(indicator));
     reveal('.page', 'room_settings', {
-        '.player': r.song_title,
-        room_settings_play: function(){
-            if (Player.current.sound) return Player.current.sound.togglePause();
-            else return alert('No current sound');
-        },
-        room_settings_rewind: function(){
-            if (Player.current.sound) Player.current.sound.setPosition(0);
-        },
-        room_settings_next: function(){
-            nextSong(r);
-            hop_to_room(r.id, 'room_settings');
-        },
 
         go_room: function(){ hop_to_room(r.id); },
         go_choose_song: function(){ choose_song(r, 'room_settings'); },
@@ -348,7 +361,22 @@ function choose_song(room, back_to){
     var search_results_updater;
     if (!back_to) back_to = 'room_settings';
 
+    var indicator = document.getElementById('room_settings_play');
+    var song_title = document.getElementById('player_title');
+    if (room.soundcloud_url) Player.stream('load', room.soundcloud_url, songname_player_view(indicator, song_title), {title:room.song_title});
+
     reveal('.page', 'choose_song', {
+        song_display: room.song_title,
+        room_settings_play: function(){
+            if (Player.current.sound) return Player.current.sound.togglePause();
+            else return alert('No current sound');
+        },
+        room_settings_rewind: function(){
+            if (Player.current.sound) Player.current.sound.setPosition(0);
+        },
+        room_settings_next: function(){
+            nextSong(room);
+        },
         go_room_settings: function(){ window[back_to](room); },
         search_input: function(entry){
             SC.get('/tracks', { q: entry }, function(tracks) {
@@ -362,14 +390,13 @@ function choose_song(room, back_to){
 
                 playlist = shuffleArray(tracks);
                 nextSong(room);
-                hop_to_room(room.id, back_to);
             });
         }],
         search_results: [[], function(clicked){
             // todo, play on search result click but don't set song
             fb('rooms/%', room.id).update(room_attributes_from_soundcloud_track(clicked));
-            hop_to_room(room.id, back_to);
-        }]
+        }],
+        back_from_choose_song: function(){ window[back_to](room); }
     });
 }
 
@@ -395,7 +422,9 @@ function backlinks(r){
 
 function show_room(r){
     var indicator = document.getElementById('room_play');
-    if (r.soundcloud_url) Player.stream('load', r.soundcloud_url, player_view(indicator));
+    if (r.soundcloud_url) Player.stream('load', r.soundcloud_url, player_view(indicator), {
+       title: r.song_title
+    });
     var reqs = compact([
         r.start_loc && '<img src="img/locate.png">',
         r.song_title && '<img src="img/note.png">',
@@ -421,7 +450,7 @@ function show_room(r){
     var room_add_options_visible = false;
 
     reveal('.page', 'show_room', {
-        '.player': r.song_title,
+        song_player: r.song_title,
         go_rooms: rooms,
         room_backlinks_div: [function () { backlinks(r); }, r.backlinks || false],
         room_backlinks_count: Object.keys(r.backlinks||{}).length,
@@ -481,11 +510,13 @@ function show_room(r){
 
 function unlock_page(r){
     var unlock_status_div = document.getElementById('unlock_status_div');
-    if (r.soundcloud_url) Player.stream('load', r.soundcloud_url, unlock_summary(unlock_status_div));
+    if (r.soundcloud_url) Player.stream('load', r.soundcloud_url, unlock_summary(unlock_status_div), {title: r.song_title});
     var remaining_requirements = [];
     var next_step;
-    if (r.members && r.members[current_user_id]) show_room(r);
-    if (r.author == current_user_id) return join_room(r);
+    if (current_user_id){
+       if (r.members && r.members[current_user_id]) show_room(r);
+       if (r.author == current_user_id) return join_room(r);
+    }
     if (r.start_loc && !user_is_in_location_for_room(r)){
         if (!next_step) next_step = 'check_location';
         remaining_requirements.push('go to the right location');

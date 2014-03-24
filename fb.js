@@ -11,7 +11,8 @@ var auth = new FirebaseSimpleLogin(F, function(error, user) {
 		name: user.displayName,
 		facebook_id: facebook_id
 	});
-	document.getElementById('login').style.display = 'none';
+	var el = document.getElementById('login');
+   if (el) el.style.display = 'none';
     if (on_auth) on_auth();
 });
 function fb(){

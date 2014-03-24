@@ -12,17 +12,16 @@
 	<header>
 		<h1 class="expando">Many Secret Doors</h1>
 	</header>
-	<div class="panel" id="login">
-		<button>Create a profile by linking facebook</button> in order to join rooms or make new rooms.
-	</div>
 	<div class="info panel">
-		<b>Many Secret Doors</b> is a place to make secret rooms.
-      When you make a room, you get to decide what people have to do to enter it.
-		Perhaps they have to visit a particular spot, or listen to some audio,
-      or answer a question correctly.
+      <b>Welcome!</b>
+		There are secret chatrooms hidden in locations around you. This site helps you find them and
+      make your own.
+      You can decide what's required for people to enter your room:
+		it could be visiting a particular spot, listening to some audio,
+      answering a question correctly, or any combination.
 
 		<p>By linking rooms together, you can design scavenger hunts,
-      playlists, secret clubs, or any kind of place-based experience.</p>
+      playlists, secret clubs.. any kind of place-based experience.</p>
 	</div>
 	<div class="panel">
 		<button class="simple_button" id="go_nearby">Show nearby rooms</button>
@@ -81,13 +80,25 @@
 		<h1>Choose a song</h1>
 		<button class="simple_button" id="go_room_settings">Done</button>
 	</header>
-	<div class="panel">
-		<form> <input type="search" id="search_input" class="simple_input" placeholder="search for a song" /> </form>
+   <div class="panel simple_hidable" id="song_display">
+      <div class="panel" id="player_title">SONG TITLE
+      </div>
+      <div class="player panel row ">
+         <button class="simple_button" id="room_settings_rewind"><img src='/img/rew.png'></button>
+         <button class="simple_button expando" id="room_settings_play"><img src='/img/play.png'></button>
+         <button class="simple_button" id="room_settings_next"><img src='/img/ff.png'></button>
+      </div>
+   </div>
+   <div  id="back_from_choose_song" class="panel simple_button">
+      <button>Choose this song</button>
+   </div>
+	<div class="white panel expando">
+      <form >
+         <input type="search" id="search_input" class="simple_input" placeholder="search for a song" /> 
+      </form>
 		<ul id="search_results" class="simple_list">
 			<li data-set="text:title"></li>
 		</ul>
-	</div>
-	<div class="panel">
 		<h3>Or choose a genre</h3>
 		<ul id="genres" class="simple_list">
 			<li data-set="text:name"></li>
@@ -131,7 +142,7 @@
 			<span id="room_requires" class="simple_label"></span>
 		</button>
 	</header>
-	<div class="player row panel simple_hidable">
+	<div id="song_player" class="player row panel simple_hidable">
 		<button class="simple_button" id="room_rewind"><img src='/img/rew.png'></button>
 		<div id="room_song_title" class="simple_label expando"></div>
 		<button class="simple_button expando" id="room_play">
@@ -189,11 +200,6 @@
 		<button class="header_back_button simple_button" id="go_room">Done</button>
 	</header>
 
-	<div class="player row panel simple_hidable">
-		<button class="simple_button" id="room_settings_rewind"><img src='/img/rew.png'></button>
-		<button class="simple_button expando" id="room_settings_play"><img src='/img/play.png'></button>
-		<button class="simple_button" id="room_settings_next"><img src='/img/ff.png'></button>
-	</div>
 
 	<form class="panel row">
 		<input id="room_title_edit" type="text" class="fbtextfield expando" placeholder="Add a title...">
