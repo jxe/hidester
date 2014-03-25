@@ -99,15 +99,24 @@ function nextSong(room){
 }
 
 
+window.onerror = function(message, url, linenumber) {
+     alert("JavaScript error: " + message + " on line " + linenumber + " for " + url);
+}
 
 // all pages
 
 var last_tab_in_rooms;
 
 function welcome_page(){
+   var el = document.getElementById('loc_status');
     reveal('.page', 'welcome_page', {
         go_nearby: function () {
-            return with_loc(function () { rooms(null, 'Nearby'); });
+            el.innerHTML = "Finding location."; 
+            return with_loc(function () { 
+               el.innerHTML = "Found, loading rooms.";
+               rooms(null, 'Nearby'); 
+               el.innerHTML = "Loaded.";
+            });
         }
     });
 }
@@ -192,6 +201,7 @@ function rooms(link_from, default_tab){
                     go_to_room(room_entry);
                 }, {
                     filter: function (arr) {
+                         if (!arr) arr = [];
                         if (tabname == 'Anywhere') return arr.filter(function (x) {
                             return !x.start_loc && !x.unlisted;
                         });
