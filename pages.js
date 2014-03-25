@@ -18,7 +18,7 @@ window.reveal = firewidget.reveal;
 // globals
 
 var playlist, curloc, riddle_answer;
-var genres = "80s, ambient, americana, avantgarde, blues, chiptunes, choir, electronic, hip-hop, glitch, gregorian, gospel, orchestral, piano, arabic, chillout, classical, dirty south, dub, funk, jazz, trance".split(', ').map(function (x){
+var genres = "wesleyan composers, 80s, ambient, americana, avantgarde, blues, chiptunes, choir, electronic, hip-hop, glitch, gregorian, gospel, orchestral, piano, arabic, chillout, classical, dirty south, dub, funk, jazz, trance".split(', ').map(function (x){
     return {name: x};
 });
 
@@ -431,9 +431,9 @@ function show_room(r){
         r.riddle_q && '<img src="img/puzzle.png">'
     ]);
     var text_reqs = compact([
-        r.start_loc && 'a location',
-        r.song_title && 'a song',
-        r.riddle_q && 'a riddle'
+        r.start_loc && 'finding a location',
+        r.song_title && 'listening to audio',
+        r.riddle_q && 'answering a riddle'
     ]).join(', ');
     if (text_reqs == '') text_reqs = 'is public';
     else text_reqs = 'requires ' + text_reqs;
@@ -441,11 +441,11 @@ function show_room(r){
     var also_note = compact([
         !r.title && 'a title',
         !r.start_loc && 'a location',
-        !r.song_title && 'a song',
+        !r.song_title && 'a sound',
         !r.riddle_q && 'a riddle'
     ]).join(', ');
-    if (also_note == '') also_note = 'edit these things';
-    else also_note = 'also add ' + also_note;
+    if (also_note == '') also_note = 'edit';
+    else also_note = 'Edit to add ' + also_note;
 
     var room_add_options_visible = false;
 
@@ -527,7 +527,7 @@ function unlock_page(r){
     }
     if (r.song_title){
         if (!next_step) next_step = 'play_song';
-        remaining_requirements.push('listen to the song '+ r.song_title);
+        remaining_requirements.push('listen to the audio '+ r.song_title);
     }
     if (!next_step) return join_room(r);
 

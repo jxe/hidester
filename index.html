@@ -36,8 +36,8 @@
 	</header>
 
 	<div class="info panel simple_hidable" id="backlink_header">
-		Add a message that points to another room or to a new room you create.
-		By linking room to room, you can make scavenger hunts, tours, or mixtapes.
+		Add a message that points to another room or a room you create.
+		Link rooms together to create scavenger hunts, tours, or mixtapes.
 	</div>
 
 	<div class="info panel simple_hidable" id="non_backlink_header">
@@ -77,7 +77,7 @@
 
 <div class="page" id="choose_song">
 	<header>
-		<h1>Choose a song</h1>
+		<h1>Choose a track</h1>
 		<button class="simple_button" id="go_room_settings">Done</button>
 	</header>
    <div class="panel simple_hidable" id="song_display">
@@ -90,16 +90,16 @@
       </div>
    </div>
    <div  id="back_from_choose_song" class="panel simple_button">
-      <button>Choose this song</button>
+      <button>Choose this track</button>
    </div>
 	<div class="white panel expando">
       <form >
-         <input type="search" id="search_input" class="simple_input" placeholder="search for a song" /> 
+         <input type="search" id="search_input" class="simple_input" placeholder="search for audio" /> 
       </form>
 		<ul id="search_results" class="simple_list">
 			<li data-set="text:title"></li>
 		</ul>
-		<h3>Or choose a genre</h3>
+		<h3>Or choose afrom our channels</h3>
 		<ul id="genres" class="simple_list">
 			<li data-set="text:name"></li>
 		</ul>
@@ -156,7 +156,7 @@
 
 		<div id="room_author_note" class="simple_button message">
 			This is your room.  Access <span class="simple_label" id="room_text_reqs"></span>.
-			<button>You can <span class="simple_label" id="room_author_also_note"></span> &raquo;</button>
+			<button><span class="simple_label" id="room_author_also_note"></span> &raquo;</button>
 		</div>
 
 		<div id="room_messages" class="expando fbobjlist">
@@ -172,8 +172,8 @@
 		<input class="simple_input expando" id="message_add">
 	</form>
 	<div id="room_add_options" class="simple_hidable panel row">
-		<button id="room_link" class="simple_button">Make a link to another room</button>
-		<button id="add_choreo" class="simple_button">Add some choreography</button>
+		<button id="room_link" class="simple_button">Link to another room</button>
+		<button id="add_choreo" class="simple_button">Add choreography</button>
 		<a href="#" class="closex simple_button toggle_room_add_options">x</a>
 	</div>
 </div>
@@ -186,8 +186,8 @@
 	</header>
 	<div class="panel">
 		<h3>Who should be able to access your new room?</h3>
-		<button class="simple_button" id="new_room_location">People near where I am now</button>
-		<button class="simple_button" id="new_room_song">People who listen to a song</button>
+		<button class="simple_button" id="new_room_location">People at this location</button>
+		<button class="simple_button" id="new_room_song">People who listen to a sound</button>
 		<button class="simple_button" id="new_room_riddle">People who answer a riddle</button>
 	</div>
 </div>
@@ -214,9 +214,9 @@
 
 		<div id="go_choose_song" class="simple_button  togrow">
 			<a href="#" data-set="class:song_toggle_class"></a>
-			Listen to a song
+			Listen to audio
 		</div>
-		<li> Song: <b data-set="text:song_title"></b> </li>
+		<li> Track: <b data-set="text:song_title"></b> </li>
 
 		<div id="set_riddle" class="simple_button  togrow">
 			<a href="#" data-set="class:riddle_toggle_class"></a>
