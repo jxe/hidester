@@ -220,6 +220,7 @@ function rooms(link_from, default_tab){
                         }
                     },
                     sort: function (arr) {
+                         if (!arr) arr = [];
                         if (tabname == 'Nearby') return arr.sort(function (a,b) { return a.km_away - b.km_away; });
                         else if (tabname == 'Active') return arr.sort(function (a,b) { return (b.mtime||0) - (a.mtime||0); });
                         else return arr;
