@@ -2,7 +2,9 @@
 
 
 var beep = (function () {
-    var ctx = new(window.audioContext || window.webkitAudioContext);
+    var ac = window.audioContext || window.webkitAudioContext;
+    if (!ac) return;
+    var ctx = new(ac);
     return function (duration, type, finishedCallback) {
         if (!duration) duration = 60;
         if (!type) type = 0;
@@ -44,36 +46,42 @@ var Player = {
             Player.current.sound.stop();
             Player.current.sound.unload();
         }
-        if (Player.current.indicator) {
-            Player.current.indicator('removing');
-        }
+        if (Player.indicator) Player.indicator('notrack');
         Player.current = {};
     },
 
+    ui: function(indicator){
+        if (indicator) Player.indicator = indicator;
+    },
+
     stream: function(method, track, indicator, options){
+        if (indicator) Player.ui(indicator);
+        Player.track(method, track, options && options.title);
+    },
+
+    track: function(method, track, title){
         if (track == Player.current.track) return;
-        if (!options) options = {};
         if (Player.current.track) Player.clear();
         Player.current.track = track;
-        if (indicator) Player.current.indicator = indicator;
-        else indicator = Player.current.indicator;
-        Player.current.title = options.title;
+        Player.current.title = title;
         var load_happened = false;
-        if (indicator) indicator('loading');
+        if (Player.indicator) Player.indicator('loading');
         setTimeout(function () {
-            if (indicator && !load_happened) indicator('load_failed');
+            if (Player.indicator && !load_happened) Player.indicator('load_failed');
         }, 20000);
         SC.stream(track, function(sound){
             load_happened = true;
             if (!sound || !sound[method]) { console.log(sound); return; }
             Player.current.sound = sound;
-            if (indicator){
-                if (method == 'play') indicator('playing');
-                else indicator('paused');
-                options.onplay=function(){ indicator('playing'); };
-                options.onpause=function(){ indicator('paused'); };
-                options.onresume=function(){ indicator('playing'); };
-            }
+
+            var indicator = Player.indicator;
+            if (indicator && method == 'play') indicator('playing');
+            else if (indicator) indicator('paused');
+
+            var options = {};
+            options.onplay=function(){   if (Player.indicator) Player.indicator('playing'); };
+            options.onpause=function(){  if (Player.indicator) Player.indicator('paused'); };
+            options.onresume=function(){ if (Player.indicator) Player.indicator('playing'); };
             sound[method](options);
         });
     }

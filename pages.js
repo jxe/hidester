@@ -95,7 +95,7 @@ function nextSong(room){
     if (!playlist || playlist.errors || playlist.length === 0) return;
     var data = playlist.pop();
     fb('rooms/%', room.id).update(room_attributes_from_soundcloud_track(data));
-    Player.stream('play', "/tracks/" + data.id, null, data);
+    Player.track('play', "/tracks/" + data.id, data.title);
 }
 
 
@@ -262,7 +262,9 @@ function link_room_to_room(r, link_to_room) {
 
 function songname_player_view(el, label_el) {
     return function(state){
+       var block = document.getElementById('song_display');
        var s = Player.current;
+       if (s) block.style.display = '';
        if (s.title && label_el) label_el.innerHTML = s.title;
         if (state == 'playing') el.innerHTML = '<img src="/img/pause.png">';
         if (state == 'paused') el.innerHTML = '<img src="/img/play.png">';
@@ -374,7 +376,8 @@ function choose_song(room, back_to){
 
     var indicator = document.getElementById('room_settings_play');
     var song_title = document.getElementById('player_title');
-    if (room.soundcloud_url) Player.stream('load', room.soundcloud_url, songname_player_view(indicator, song_title), {title:room.song_title});
+    Player.ui(songname_player_view(indicator, song_title));
+    if (room.soundcloud_url) Player.track('load', room.soundcloud_url, room.song_title);
 
     reveal('.page', 'choose_song', {
         song_display: room.song_title,
