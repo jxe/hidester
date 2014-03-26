@@ -125,39 +125,41 @@ function new_room(link_from){
     reveal('.page', 'new_room', {
         new_room_go_rooms: function () { rooms(link_from, last_tab_in_rooms); },
         new_room_location: function () {
-            var new_room = create_room(link_from);
             with_loc(function(loc){
-                fb('rooms/%', new_room.id).update({ start_loc: [loc.coords.latitude, loc.coords.longitude] });
-                show_room(new_room);
+               create_room_and(link_from, { start_loc: [loc.coords.latitude, loc.coords.longitude] }, function(new_room){
+                   show_room(new_room);
+               });
             });
         },
         new_room_song: function () {
-            var new_room = create_room(link_from);
-            choose_song(new_room, 'show_room');
+            create_room_and(link_from, {}, function(new_room){
+               choose_song(new_room, 'show_room');
+            });
         },
         new_room_riddle: function () {
-            var r = create_room(link_from);
-            if (r.riddle_q) return fb('rooms/%/riddle_q', r.id).remove();
             var q = prompt('What question to you want answered?');
             if (!q) return;
             var a = prompt('What\'s the answer?');
             if (!a) return;
-            fb('rooms/%', r.id).update({ riddle_q: q, riddle_a: a });
-            show_room(r);
+            create_room_and(link_from,  {riddle_q: q, riddle_a: a },  function(r){
+               fb('rooms/%', r.id).update({});
+               show_room(r);
+            });
         }
     });
 }
 
-function create_room(link_from){
+function create_room_and(link_from, options, cb){
    if (!current_user_id) {
       alert('In order to create a chat room, we need to grab your name and profile pic from facebook. We don\'t post anything to facebook!');
-      return with_user(function(){ create_room(link_from); });
+      return with_user(function(){ create_room_and(link_from,  options, cb); });
    }
-    var new_room = { author: current_user_id };
+   var new_room = options || {};
+   new_room.author = current_user_id;
     new_room.id = fb('rooms').push(new_room).name();
     if (link_from) link_room_to_room(link_from, new_room);
     else join_room(new_room);
-    return new_room;
+    cb(new_room);
 }
 
 function join_room(r){
