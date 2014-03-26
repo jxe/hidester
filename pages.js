@@ -318,6 +318,14 @@ function room_settings(r){
                 if (!room.start_loc) return "None yet.";
                 else return room.start_loc[0] + ", " + room.start_loc[1];
             },
+            track: function(room){
+               if (room.song_title) return "track: <b>" + room.song_title + "</b>";
+               else return '';
+            },
+            riddle: function(room){
+               if (room.riddle_q) return "Q: <b>" + room.riddle_q + "</b>; A: <b>" + room.riddle_a + "</b>";
+               else return '';
+            },
             location_toggle_class: function (room) {
                 return room.start_loc ? 'toggle on' : 'toggle off';
             },
