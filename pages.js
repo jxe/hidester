@@ -452,6 +452,14 @@ function backlinks(r){
 }
 
 
+function room_entry_requirements_text(r){
+    var text_reqs = compact([
+        r.start_loc && 'finding a location',
+        r.song_title && 'listening to audio',
+        r.riddle_q && 'answering a riddle'
+    ]).join(', ');
+}
+
 
 function show_room(r){
     var indicator = document.getElementById('room_play');
@@ -463,11 +471,7 @@ function show_room(r){
         r.song_title && '<img src="img/note.png">',
         r.riddle_q && '<img src="img/puzzle.png">'
     ]);
-    var text_reqs = compact([
-        r.start_loc && 'finding a location',
-        r.song_title && 'listening to audio',
-        r.riddle_q && 'answering a riddle'
-    ]).join(', ');
+    var text_reqs = room_entry_requirements_text(r);
     if (text_reqs == '') text_reqs = 'is public';
     else text_reqs = 'requires ' + text_reqs;
 
@@ -522,7 +526,12 @@ function show_room(r){
         email_invite: function(){
             var url = "http://manysecretdoors.org/#/rooms/" + r.id;
             var subject = 'A secret room';
-            var body = 'Please consider visiting (this|my) room on Many Secret Doors.  Once you click this link, visiting the room will mean visiting a location, listening to an audio track, and answering a riddle.  Here is the link: ' + url;
+            if (r.author == current_user_id) subject = 'I made a secret room';
+            var warning = '';
+            var text_reqs = room_entry_requirements_text(r);
+            var qualifier = (r.author == current_user_id) ? 'my' : 'this';
+            if (text_reqs) warning = 'Once you click this link, visiting the room will mean ' + text_reqs + '.  ';
+            var body = 'Please consider visiting '+qualifier+' room on Many Secret Doors.  '+warning+'Here is the link: ' + url;
             window.location = 'mailto:?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
         },
         room_member_names: values(r.members).map(function (x) { return x.name; }).join(', '),
@@ -595,7 +604,7 @@ function unlock_page(r){
         remaining_requirements.push('answer a riddle');
     }
     if (r.song_title){
-        if (!next_step) next_step = 'play_song';
+        if (!next_step) next_step = 'play_audio';
         remaining_requirements.push('listen to the audio '+ r.song_title);
     }
     if (!next_step) return join_room(r);
@@ -623,7 +632,7 @@ function unlock_page(r){
                 riddle_answer = prompt(r.riddle_q);
                 if (user_has_solved_riddle_for_room(r)) unlock_page(r);
                 else alert('Sorry, wrong answer.');
-            } else if (next_step == 'play_song'){
+            } else if (next_step == 'play_audio'){
                 if (Player.current.sound) {
                     Player.current.sound.onPosition(10000, function () {
                         join_room(r);
