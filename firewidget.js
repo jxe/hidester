@@ -47,7 +47,7 @@
 			el.innerHTML = value;
 		},
 		simple_input: function(el, onchange){
-			firewidget.sub(el.form, 'submit', function(ev){ onchange(el.value); ev.preventDefault(); el.value = ''; return false; });
+			firewidget.sub(el.form, 'submit', function(ev){ onchange(el.value); ev.preventDefault(); el.value = ''; el.blur(); return false; });
 		},
 		simple_hidable: function(el, shown){
 			if (!shown) el.style.display = 'none';
@@ -57,7 +57,7 @@
 			console.log(el, 'shown', shown);
 			if (shown !== undefined && !shown) el.style.display = 'none';
 			else if (shown) el.style.display = '';
-			firewidget.sub(el, 'click', function (ev) { ev.preventDefault(); does(); return false; });
+			firewidget.sub(el, 'click', function (ev) { ev.preventDefault(); does(el); return false; });
 		},
 		simple_list: function(el, array, onclick, id_pfx){
 			if (!id_pfx) id_pfx = '';

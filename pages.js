@@ -503,11 +503,16 @@ function show_room(r){
             if (r.author == current_user_id) room_settings(r);
         },
         room_add_options: !!room_add_options_visible,
-        '.toggle_room_add_options': function () {
+        '.toggle_room_add_options': function (toggler) {
             room_add_options_visible = !room_add_options_visible;
             var el = document.getElementById('room_add_options');
-            if (room_add_options_visible) el.style.display = '';
-            else el.style.display = 'none';
+            if (room_add_options_visible) {
+              el.style.display = '';
+              toggler.classList.add('open');
+            } else {
+              el.style.display = 'none';
+              toggler.classList.remove('open');
+            }
         },
         add_choreo: function () {
             alert('Coming soon!');
