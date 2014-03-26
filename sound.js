@@ -46,12 +46,18 @@ var Player = {
             Player.current.sound.stop();
             Player.current.sound.unload();
         }
-        if (Player.indicator) Player.indicator('notrack');
+        Player.is('notrack');
         Player.current = {};
     },
 
     ui: function(indicator){
         if (indicator) Player.indicator = indicator;
+        if (Player.state) Player.is(Player.state);
+    },
+
+    is: function(state){
+          Player.state = state;
+          if (Player.indicator) Player.indicator(Player.state);
     },
 
     stream: function(method, track, indicator, options){
@@ -65,23 +71,20 @@ var Player = {
         Player.current.track = track;
         Player.current.title = title;
         var load_happened = false;
-        if (Player.indicator) Player.indicator('loading');
+        Player.is('loading');
         setTimeout(function () {
-            if (Player.indicator && !load_happened) Player.indicator('load_failed');
+            if (!load_happened) Player.is('load_failed');
         }, 20000);
         SC.stream(track, function(sound){
             load_happened = true;
             if (!sound || !sound[method]) { console.log(sound); return; }
             Player.current.sound = sound;
-
-            var indicator = Player.indicator;
-            if (indicator && method == 'play') indicator('playing');
-            else if (indicator) indicator('paused');
-
+            if (method == 'play') Player.is('playing');
+            else Player.is('paused');
             var options = {};
-            options.onplay=function(){   if (Player.indicator) Player.indicator('playing'); };
-            options.onpause=function(){  if (Player.indicator) Player.indicator('paused'); };
-            options.onresume=function(){ if (Player.indicator) Player.indicator('playing'); };
+            options.onplay=function(){   Player.is('playing'); };
+            options.onpause=function(){  Player.is('paused'); };
+            options.onresume=function(){ Player.is('playing'); };
             sound[method](options);
         });
     }

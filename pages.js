@@ -70,7 +70,7 @@ function room_attributes_from_soundcloud_track(data){
         soundcloud_url: "/tracks/" + data.id,
         soundcloud_id: data.id,
         waveform_url: data.waveform_url,
-        song_title: data.title,
+        song_title: data.title + " by " + data.user && data.user.username,
         duration: data.duration / 1000,
         created_at: (new Date()).getTime()
     };
