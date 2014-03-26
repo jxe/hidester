@@ -96,7 +96,7 @@ function nextSong(room){
     if (!playlist || playlist.errors || playlist.length === 0) return;
     var data = playlist.pop();
     fb('rooms/%', room.id).update(room_attributes_from_soundcloud_track(data));
-    Player.track('play', "/tracks/" + data.id, data.title);
+    Player.track('play', "/tracks/" + data.id, data.title + " by " + (data.user && data.user.username));
 }
 
 
@@ -313,7 +313,6 @@ function room_settings(r){
     reveal('.page', 'room_settings', {
 
         go_room: function(){ hop_to_room(r.id); },
-        go_choose_song: function(){ choose_song(r, 'room_settings'); },
         room_attributes: [fb('rooms/%', r.id), {
             location: function(room){
                 if (!room.start_loc) return "None yet.";
@@ -333,12 +332,20 @@ function room_settings(r){
             }
         }],
         room_title_edit: fb('rooms/%/title', r.id),
+        go_choose_song: function(){ 
+          if (r.song_title) {
+            fb('rooms/%/song_title', r.id).remove();
+            return hop_to_room(r.id, 'room_settings');
+          }
+          else choose_song(r, 'room_settings'); 
+        },
         set_location_here: function(){
             if (r.start_loc){
                 fb('rooms/%/start_loc', r.id).remove();
+                hop_to_room(r.id, 'room_settings');
             } else {
                 with_loc(function(loc){
-                    fb('rooms/%', r.id).update({ start_loc: [loc.coords.latitude, loc.coords.longitude] });
+                    fb('rooms/%/start_loc', r.id).set([loc.coords.latitude, loc.coords.longitude]);
                     hop_to_room(r.id, 'room_settings');
                 });
             }
@@ -381,7 +388,14 @@ function choose_song(room, back_to){
         room_settings_next: function(){
             nextSong(room);
         },
-        go_room_settings: function(){ window[back_to](room); },
+        go_room_settings: function(){ 
+          Player.stop();
+          hop_to_room(room.id, back_to);
+        },
+        back_from_choose_song: function(){ 
+          Player.stop();
+          hop_to_room(room.id, back_to);
+        },
         search_input: function(entry){
             SC.get('/tracks', { q: entry }, function(tracks) {
                 document.getElementById('search_results').render(tracks);
@@ -415,8 +429,7 @@ function choose_song(room, back_to){
         search_results: [[], function(clicked){
             // todo, play on search result click but don't set song
             fb('rooms/%', room.id).update(room_attributes_from_soundcloud_track(clicked));
-        }],
-        back_from_choose_song: function(){ window[back_to](room); }
+        }]
     });
 }
 
@@ -505,6 +518,12 @@ function show_room(r){
         },
         add_choreo: function () {
             alert('Coming soon!');
+        },
+        email_invite: function(){
+            var url = "http://manysecretdoors.org/#/rooms/" + r.id;
+            var subject = 'A secret room';
+            var body = 'Please consider visiting (this|my) room on Many Secret Doors.  Once you click this link, visiting the room will mean visiting a location, listening to an audio track, and answering a riddle.  Here is the link: ' + url;
+            window.location = 'mailto:?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
         },
         room_member_names: values(r.members).map(function (x) { return x.name; }).join(', '),
         room_messages: [fb('room_messages/%', r.id), function(msg){
@@ -622,4 +641,8 @@ function unlock_page(r){
 
 
 
-welcome_page();
+var m;
+if (window.location.hash && (m = window.location.hash.match(/\/rooms\/(.*)/))){
+  hop_to_room(m[1]);
+} else welcome_page();
+

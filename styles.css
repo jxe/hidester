@@ -364,7 +364,8 @@ button.toggle_room_add_options.open {
 
 #search_input {
 	padding: 8px 10px;
-	font-size: 32px;
+	font-size: 22px;
+  max-width: 100%;
 }
 
 #player_title{

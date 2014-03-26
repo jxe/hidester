@@ -41,6 +41,10 @@ var Player = {
 
     current: {},
 
+    stop: function(){
+      if (Player.current.sound) Player.current.sound.stop();
+    },
+
     clear: function(){
         if (Player.current.sound){
             Player.current.sound.stop();
