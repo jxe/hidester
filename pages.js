@@ -17,8 +17,9 @@ window.reveal = firewidget.reveal;
 
 // globals
 
+function $(x){ return document.getElementById(x); }
 var playlist, curloc, riddle_answer;
-var genres = "wesleyan composers, 80s, ambient, americana, avantgarde, blues, chiptunes, choir, electronic, hip-hop, glitch, gregorian, gospel, orchestral, piano, arabic, chillout, classical, dirty south, dub, funk, jazz, trance".split(', ').map(function (x){
+var genres = "80s, ambient, americana, avantgarde, blues, chiptunes, choir, electronic, hip-hop, glitch, gregorian, gospel, orchestral, piano, arabic, chillout, classical, dirty south, dub, funk, jazz, trance".split(', ').map(function (x){
     return {name: x};
 });
 
@@ -70,7 +71,7 @@ function room_attributes_from_soundcloud_track(data){
         soundcloud_url: "/tracks/" + data.id,
         soundcloud_id: data.id,
         waveform_url: data.waveform_url,
-        song_title: data.title,
+        song_title: data.title + " by " + data.user && data.user.username,
         duration: data.duration / 1000,
         created_at: (new Date()).getTime()
     };
@@ -95,7 +96,7 @@ function nextSong(room){
     if (!playlist || playlist.errors || playlist.length === 0) return;
     var data = playlist.pop();
     fb('rooms/%', room.id).update(room_attributes_from_soundcloud_track(data));
-    Player.stream('play', "/tracks/" + data.id, null, data);
+    Player.track('play', "/tracks/" + data.id, data.title);
 }
 
 
@@ -184,17 +185,22 @@ function rooms(link_from, default_tab){
     reveal('.page', 'rooms', {
         rooms_title: link_from ? 'Link to where?' : 'Many Secret Doors',
         backlink_header: link_from,
-        non_backlink_header: !link_from,
+        tabs_toggle: function(state){
+          $('tab_box').show(state);
+        },
+        tab_box: false,
         rooms_back: [function () {
             show_room(link_from);
         }, !!link_from],
         '.room_create': function(){
             return new_room(link_from);
         },
-        room_index_type: [['Nearby', 'Active', 'Anywhere'], function (tabname, ev) {
+        room_index_type: [['Nearby', 'with recent activity', 'Anywhere'], function (tabname, ev) {
             last_tab_in_rooms = tabname;
+            if (ev) $('tabs_toggle').state(0);
             if (tabname == 'Nearby' && (!curloc || ev)) return with_loc(function () { rooms(link_from, 'Nearby'); });
             reveal('#rooms #rooms_list', 'rooms_list', {
+                current_tab_name: tabname,
                 '#rooms': function (el, sub) {
                     sub(RealtimeLocation, 'changed', function () { document.getElementById('rooms_list').redraw(); });
                 },
@@ -224,7 +230,7 @@ function rooms(link_from, default_tab){
                     sort: function (arr) {
                          if (!arr) arr = [];
                         if (tabname == 'Nearby') return arr.sort(function (a,b) { return a.km_away - b.km_away; });
-                        else if (tabname == 'Active') return arr.sort(function (a,b) { return (b.mtime||0) - (a.mtime||0); });
+                        else if (tabname == 'with recent activity') return arr.sort(function (a,b) { return (b.mtime||0) - (a.mtime||0); });
                         else return arr;
                     },
                     '.distance_and_direction': distance_to_room,
@@ -250,7 +256,7 @@ function rooms(link_from, default_tab){
 
 function link_room_to_room(r, link_to_room) {
     var msg = prompt('Please provide a message that will appear with the link:');
-    if (!msg) show_room(r);
+    if (!msg) return show_room(r);
     fb('rooms/%/backlinks/%', link_to_room.id, r.id).set(r);
     fb('room_messages/%', r.id).push({
         author: current_user_id,
@@ -264,7 +270,9 @@ function link_room_to_room(r, link_to_room) {
 
 function songname_player_view(el, label_el) {
     return function(state){
+       var block = document.getElementById('song_display');
        var s = Player.current;
+       if (s) block.style.display = '';
        if (s.title && label_el) label_el.innerHTML = s.title;
         if (state == 'playing') el.innerHTML = '<img src="/img/pause.png">';
         if (state == 'paused') el.innerHTML = '<img src="/img/play.png">';
@@ -331,6 +339,7 @@ function room_settings(r){
             } else {
                 with_loc(function(loc){
                     fb('rooms/%', r.id).update({ start_loc: [loc.coords.latitude, loc.coords.longitude] });
+                    hop_to_room(r.id, 'room_settings');
                 });
             }
         },
@@ -344,25 +353,6 @@ function room_settings(r){
         },
         toggle_visibility: function () {
             fb('rooms/%', r.id).update({ unlisted: !r.unlisted });
-        },
-        commands: function () {
-            var cmd = prompt("Command:");
-            if (cmd == 'leave'){
-                if (r.author == current_user_id) fb('rooms/%/author', r.id).remove();
-                fb('rooms/%/members/%', r.id, current_user_id).remove();
-                hop_to_room(r.id);
-            }
-            if (cmd == 'delete'){
-                fb('rooms/%', r.id).remove();
-                rooms();
-            }
-            if (cmd == 'll'){
-                var ll = prompt('ll:');
-                if (!ll) return;
-                ll = ll.split(',');
-                var lat = Number(ll[0]), lon = Number(ll[1]);
-                fb('rooms/%', r.id).update({ start_loc: [lat, lon] });
-            }
         }
     });
 }
@@ -376,7 +366,8 @@ function choose_song(room, back_to){
 
     var indicator = document.getElementById('room_settings_play');
     var song_title = document.getElementById('player_title');
-    if (room.soundcloud_url) Player.stream('load', room.soundcloud_url, songname_player_view(indicator, song_title), {title:room.song_title});
+    Player.ui(songname_player_view(indicator, song_title));
+    if (room.soundcloud_url) Player.track('load', room.soundcloud_url, room.song_title);
 
     reveal('.page', 'choose_song', {
         song_display: room.song_title,
@@ -396,11 +387,27 @@ function choose_song(room, back_to){
                 document.getElementById('search_results').render(tracks);
             });
         },
+        wesleyan_playlist: function(){
+            SC.get('/groups/142572/tracks', {order: 'hotness'}, function(tracks){
+              if (!tracks) return alert('no songs in that genre!');
+              if (tracks.errors) { console.log(tracks);  return('attempt to fetch songs failed'); }
+              playlist = shuffleArray(tracks);
+              nextSong(room);
+            });
+        },
+        seamus_playlist: function(){
+            SC.get('/groups/143351/tracks', {order: 'hotness'}, function(tracks){
+              if (!tracks) return alert('no songs in that genre!');
+              if (tracks.errors) { console.log(tracks);  return('attempt to fetch songs failed'); }
+              playlist = shuffleArray(tracks);
+              nextSong(room);
+            });
+        },
         genres: [genres, function(clicked){
+            // http://api.soundcloud.com/groups/142572.json?client_id=43963acff2ef28ec55f039eddcea8478
             SC.get('/tracks', { genres: clicked.name, order: 'hotness' }, function(tracks) {
                 if (!tracks) return alert('no songs in that genre!');
                 if (tracks.errors) { console.log(tracks);  return('attempt to fetch songs failed'); }
-
                 playlist = shuffleArray(tracks);
                 nextSong(room);
             });
@@ -464,7 +471,7 @@ function show_room(r){
 
     reveal('.page', 'show_room', {
         song_player: r.song_title,
-        go_rooms: rooms,
+        go_rooms: function(){ rooms(); },
         room_backlinks_div: [function () { backlinks(r); }, r.backlinks || false],
         room_backlinks_count: Object.keys(r.backlinks||{}).length,
         room_author_note: [function () { room_settings(r); }, r.author == current_user_id],
@@ -485,11 +492,16 @@ function show_room(r){
             if (r.author == current_user_id) room_settings(r);
         },
         room_add_options: !!room_add_options_visible,
-        '.toggle_room_add_options': function () {
+        '.toggle_room_add_options': function (toggler) {
             room_add_options_visible = !room_add_options_visible;
             var el = document.getElementById('room_add_options');
-            if (room_add_options_visible) el.style.display = '';
-            else el.style.display = 'none';
+            if (room_add_options_visible) {
+              el.style.display = '';
+              toggler.classList.add('open');
+            } else {
+              el.style.display = 'none';
+              toggler.classList.remove('open');
+            }
         },
         add_choreo: function () {
             alert('Coming soon!');
@@ -504,6 +516,31 @@ function show_room(r){
             }
         }],
         message_add: function(entry){
+            if (!entry) return;
+            if (entry[0] == '/') {
+              var cmd = entry.slice(1);
+              if (cmd == 'leave'){
+                  if (r.author == current_user_id) fb('rooms/%/author', r.id).remove();
+                  fb('rooms/%/members/%', r.id, current_user_id).remove();
+                  hop_to_room(r.id);
+                  return;
+              }
+              if (cmd == 'delete'){
+                  fb('rooms/%', r.id).remove();
+                  rooms();
+                  return;
+              }
+              if (cmd == 'll'){
+                  var ll = prompt('ll:');
+                  if (!ll) return;
+                  ll = ll.split(',');
+                  var lat = Number(ll[0]), lon = Number(ll[1]);
+                  fb('rooms/%', r.id).update({ start_loc: [lat, lon] });
+                  return;
+              }
+              alert('Unrecognized command.');
+              return;
+            }
             var msg = {
                 author: current_user_id,
                 author_name: short_name(),
@@ -553,7 +590,7 @@ function unlock_page(r){
                 el.innerHTML = distance_to_room(r);
             });
         },
-        go_other_rooms: rooms,
+        go_other_rooms: function(){ rooms(); },
         unlock_room_title: r.title || 'Unnamed Room',
         remaining_requirements: conjoin(remaining_requirements),
         button_label: next_step.replace('_', ' '),

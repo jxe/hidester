@@ -2,7 +2,9 @@
 
 
 var beep = (function () {
-    var ctx = new(window.audioContext || window.webkitAudioContext);
+    var ac = window.audioContext || window.webkitAudioContext;
+    if (!ac) return;
+    var ctx = new(ac);
     return function (duration, type, finishedCallback) {
         if (!duration) duration = 60;
         if (!type) type = 0;
@@ -44,36 +46,45 @@ var Player = {
             Player.current.sound.stop();
             Player.current.sound.unload();
         }
-        if (Player.current.indicator) {
-            Player.current.indicator('removing');
-        }
+        Player.is('notrack');
         Player.current = {};
     },
 
+    ui: function(indicator){
+        if (indicator) Player.indicator = indicator;
+        if (Player.state) Player.is(Player.state);
+    },
+
+    is: function(state){
+          Player.state = state;
+          if (Player.indicator) Player.indicator(Player.state);
+    },
+
     stream: function(method, track, indicator, options){
+        if (indicator) Player.ui(indicator);
+        Player.track(method, track, options && options.title);
+    },
+
+    track: function(method, track, title){
         if (track == Player.current.track) return;
-        if (!options) options = {};
         if (Player.current.track) Player.clear();
         Player.current.track = track;
-        if (indicator) Player.current.indicator = indicator;
-        else indicator = Player.current.indicator;
-        Player.current.title = options.title;
+        Player.current.title = title;
         var load_happened = false;
-        if (indicator) indicator('loading');
+        Player.is('loading');
         setTimeout(function () {
-            if (indicator && !load_happened) indicator('load_failed');
+            if (!load_happened) Player.is('load_failed');
         }, 20000);
         SC.stream(track, function(sound){
             load_happened = true;
             if (!sound || !sound[method]) { console.log(sound); return; }
             Player.current.sound = sound;
-            if (indicator){
-                if (method == 'play') indicator('playing');
-                else indicator('paused');
-                options.onplay=function(){ indicator('playing'); };
-                options.onpause=function(){ indicator('paused'); };
-                options.onresume=function(){ indicator('playing'); };
-            }
+            if (method == 'play') Player.is('playing');
+            else Player.is('paused');
+            var options = {};
+            options.onplay=function(){   Player.is('playing'); };
+            options.onpause=function(){  Player.is('paused'); };
+            options.onresume=function(){ Player.is('playing'); };
             sound[method](options);
         });
     }
