@@ -331,6 +331,7 @@ function room_settings(r){
             } else {
                 with_loc(function(loc){
                     fb('rooms/%', r.id).update({ start_loc: [loc.coords.latitude, loc.coords.longitude] });
+                    hop_to_room(r.id, 'room_settings');
                 });
             }
         },
