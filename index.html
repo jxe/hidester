@@ -40,12 +40,16 @@
       Link rooms together to create scavenger hunts, tours, or mixtapes.
     </div>
 
-    <div class="simple_hidable" id="non_backlink_header">
-      Choose a room near you, or create your own and invite friends.
-    </div>
+    <center class="simple_toggle" id="tabs_toggle">
+      secret rooms
+      <b class="simple_label" id="current_tab_name"></b>
+      &#x25BE;
+    </center>
 
-    <div class="simple_tabs" id="room_index_type">
-      <b data-set="text:name"></b>
+    <div class="simple_hidable" id="tab_box">
+      <div class="simple_tabs" id="room_index_type">
+        <b data-set="text:name"></b>
+      </div>
     </div>
 
     <div style="margin-top:15px; text-align:center">
@@ -201,7 +205,6 @@
 
 <div class="page" id="room_settings">
 	<header>
-		<button id="commands" class="simple_button header_right_button"><img src="/img/settings.png" /></button>
 		<h1>This Room</h1>
 		<button class="header_back_button simple_button" id="go_room">Done</button>
 	</header>

@@ -50,14 +50,39 @@
 			firewidget.sub(el.form, 'submit', function(ev){ onchange(el.value); ev.preventDefault(); el.value = ''; el.blur(); return false; });
 		},
 		simple_hidable: function(el, shown){
-			if (!shown) el.style.display = 'none';
-			else if (shown) el.style.display = '';
+      el.show = function(shown){
+        if (!shown){
+          el.classList.add('hiding');
+          el.classList.add('hidden');
+          el.style.display = 'none';
+          el.classList.remove('hiding');
+        } else {
+          el.classList.add('revealing');
+          el.style.display = '';
+          el.classList.remove('revealing');
+          el.classList.add('revealed');
+        }
+      };
+      el.show(shown);
 		},
 		simple_button: function(el, does, shown){
-			console.log(el, 'shown', shown);
 			if (shown !== undefined && !shown) el.style.display = 'none';
 			else if (shown) el.style.display = '';
 			firewidget.sub(el, 'click', function (ev) { ev.preventDefault(); does(el); return false; });
+		},
+		simple_toggle: function(el, does, start_state){
+      var state = start_state;
+      el.state = function(s){
+        state = s;
+        if (state) el.classList.add('on');
+        else el.classList.remove('on');
+        does(state, el);
+      };
+			firewidget.sub(el, 'click', function (ev) { 
+        ev.preventDefault();
+        el.state(!state);
+        return false; 
+      });
 		},
 		simple_list: function(el, array, onclick, id_pfx){
 			if (!id_pfx) id_pfx = '';
