@@ -398,17 +398,24 @@ function choose_song(room, back_to){
                 document.getElementById('search_results').render(tracks);
             });
         },
+        wesleyan_playlist: function(){
+            SC.get('/groups/142572/tracks', {order: 'hotness'}, function(tracks){
+              if (!tracks) return alert('no songs in that genre!');
+              if (tracks.errors) { console.log(tracks);  return('attempt to fetch songs failed'); }
+              playlist = shuffleArray(tracks);
+              nextSong(room);
+            });
+        },
+        seamus_playlist: function(){
+            SC.get('/groups/143351/tracks', {order: 'hotness'}, function(tracks){
+              if (!tracks) return alert('no songs in that genre!');
+              if (tracks.errors) { console.log(tracks);  return('attempt to fetch songs failed'); }
+              playlist = shuffleArray(tracks);
+              nextSong(room);
+            });
+        },
         genres: [genres, function(clicked){
-            // the other one is  143351
             // http://api.soundcloud.com/groups/142572.json?client_id=43963acff2ef28ec55f039eddcea8478
-            if (clicked.name = "wesleyan"){
-              SC.get('/groups/142572/tracks', {order: 'hotness'}, function(tracks){
-                if (!tracks) return alert('no songs in that genre!');
-                if (tracks.errors) { console.log(tracks);  return('attempt to fetch songs failed'); }
-                playlist = shuffleArray(tracks);
-                nextSong(room);
-              });
-            }
             SC.get('/tracks', { genres: clicked.name, order: 'hotness' }, function(tracks) {
                 if (!tracks) return alert('no songs in that genre!');
                 if (tracks.errors) { console.log(tracks);  return('attempt to fetch songs failed'); }

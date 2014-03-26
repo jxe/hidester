@@ -33,35 +33,36 @@
 	<header>
 		<button class="simple_button" id="rooms_back">Back</button>
 		<h1 class="expando simple_label" id="rooms_title">Many Secret Doors</h1>
-		<button class="simple_button room_create"><big>+</big></button>
 	</header>
+  <div class="white panel expando">
+    <div class="simple_hidable" id="backlink_header">
+      Add a message that points to another room or a room you create.
+      Link rooms together to create scavenger hunts, tours, or mixtapes.
+    </div>
 
-	<div class="info panel simple_hidable" id="backlink_header">
-		Add a message that points to another room or a room you create.
-		Link rooms together to create scavenger hunts, tours, or mixtapes.
-	</div>
+    <div class="simple_hidable" id="non_backlink_header">
+      Choose a room near you, or create your own and invite friends.
+    </div>
 
-	<div class="info panel simple_hidable" id="non_backlink_header">
-		Choose a room near you, or create your own and invite friends.
-	</div>
+    <div class="simple_tabs" id="room_index_type">
+      <b data-set="text:name"></b>
+    </div>
 
-	<div class="simple_tabs" id="room_index_type">
-		<b data-set="text:name"></b>
-	</div>
-
-	<div class="white panel centered fbobjlist expando" id="rooms_list">
-		<div class="room_card">
-			<div class="room_tile">
-				<i data-set="text:distance_and_direction"></i>
-				<span data-set="text:indicator"></span>
-				<b data-set="text:guardedtitle"></b>
-			</div>
-			<div class="members_text" data-set="text:members_text"></div>
-		</div>
-	</div>
-	<div class="panel">
-		<button class="simple_button room_create">Create a new room</button>
-	</div>
+    <div style="margin-top:15px; text-align:center">
+      <div class="room_card simple_button room_create">
+        <div class="room_tile create_room"> <b><big>+</big>Create a new room</b> </div>
+      </div><span class="fbobjlist" id="rooms_list">
+        <div class="room_card">
+          <div class="room_tile">
+            <i data-set="text:distance_and_direction"></i>
+            <span data-set="text:indicator"></span>
+            <b data-set="text:guardedtitle"></b>
+          </div>
+          <div class="members_text" data-set="text:members_text"></div>
+        </div>
+      </span>
+    </div>
+  </div>
 </div>
 
 <div class="page" id="linkable_rooms">
@@ -82,13 +83,13 @@
 		<button class="simple_button" id="go_room_settings">Done</button>
 	</header>
    <div class="panel simple_hidable" id="song_display">
-      <div class="panel" id="player_title">SONG TITLE </div>
-      <div class="player panel row ">
+      <div class="player row ">
          <button class="simple_button" id="room_settings_rewind"><img src='/img/rew.png'></button>
          <button class="simple_button expando" id="room_settings_play"><img src='/img/play.png'></button>
          <button class="simple_button" id="room_settings_next"><img src='/img/ff.png'></button>
       </div>
-      <div  id="back_from_choose_song" class="panel simple_button">
+      <div class="tight panel" id="player_title">SONG TITLE </div>
+      <div  id="back_from_choose_song" class="tight panel simple_button">
         <button>Choose this track</button>
       </div>
    </div>
@@ -99,10 +100,16 @@
 		<ul id="search_results" class="simple_list">
 			<li data-set="text:title"></li>
 		</ul>
-		<h3>Or choose afrom our channels</h3>
-		<ul id="genres" class="simple_list">
-			<li data-set="text:name"></li>
-		</ul>
+    <h3>Choose a playlist</h3>
+    <div id="playlists">
+			<button class="simple_button" id="wesleyan_playlist">sounds by Wesleyan composers</button>
+			<button class="simple_button" id="seamus_playlist">sounds by SEAMUS composers</button>
+      <a href="https://soundcloud.com/groups/flashmob-radio-seamus-composers">Upload a sound</a>
+    </div>
+		<h3 style="margin-top:10px">Or choose a genre</h3>
+		<div id="genres" class="simple_list">
+			<button data-set="text:name"></button>
+		</div>
 	</div>
 </div>
 
