@@ -453,7 +453,7 @@ function backlinks(r){
 
 
 function room_entry_requirements_text(r){
-    var text_reqs = compact([
+    return compact([
         r.start_loc && 'finding a location',
         r.song_title && 'listening to audio',
         r.riddle_q && 'answering a riddle'
