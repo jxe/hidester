@@ -528,9 +528,7 @@ function show_room(r){
               toggler.classList.remove('open');
             }
         },
-        add_choreo: function () {
-            alert('Coming soon!');
-        },
+        //add_choreo: function () { alert('Coming soon!'); },
         email_invite: function(){
             var url = "http://manysecretdoors.org/#/rooms/" + r.id;
             var subject = 'A secret room';
