@@ -68,7 +68,9 @@
 		simple_button: function(el, does, shown){
 			if (shown !== undefined && !shown) el.style.display = 'none';
 			else if (shown) el.style.display = '';
-			firewidget.sub(el, 'click', function (ev) { ev.preventDefault(); does(el); return false; });
+      var h = window.Hammer ? Hammer(el) : el;
+      var evtype = window.Hammer ? 'tap' : 'click';
+			firewidget.sub(h, evtype, function (ev) { ev.preventDefault(); does(el); return false; });
 		},
 		simple_toggle: function(el, does, start_state){
       var state = start_state;
@@ -184,14 +186,21 @@ function mikrotemplate(el, obj_or_array, id_pfx){
 			mikrotemplate(el, array, id_prefix);
       var children = el.childNodes;
 			if (onclick) {
-				var f = function(ev){ onclick( this.data, ev, this ); };
-				for (var i = children.length - 1; i >= 0; i--) children[i].onclick = f;
+        var f = function(ev){ onclick( this.data, ev, this ); };
+        if (window.Hammer){
+          for (var i = children.length - 1; i >= 0; i--) Hammer(children[i]).on('tap', f);
+        } else {
+          for (var i = children.length - 1; i >= 0; i--) children[i].onclick = f;
+        }
 			}
 			if (options.dblclick) {
 				var f = function(ev){ options.dblclick( this.data, ev, this ); };
-				for (var i = children.length - 1; i >= 0; i--) children[i].onclick = f;
+        if (window.Hammer){
+          for (var i = children.length - 1; i >= 0; i--) Hammer(children[i]).on('doubletap', f);
+        } else {
+          for (var i = children.length - 1; i >= 0; i--) children[i].ondblclick = f;
+        }
 			}
-      
 		};
 		el.update_row = function (o) {
 			var item = document.getElementById(id_prefix + o.id);
