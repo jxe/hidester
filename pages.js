@@ -506,6 +506,14 @@ function show_room(r){
         room_rewind: function(){
             if (Player.current.sound) Player.current.sound.setPosition(0);
         },
+        '.edit_title': function(){
+           if (r.author != current_user_id) return ;
+           var update = prompt('New title:');
+           if (update) {
+              fb('rooms/%/title', r.id).set(update);
+              document.getElementById('room_title').innerHTML = update;
+           }
+        },
         room_title: r.title || "New Room",
         room_add_options: !!room_add_options_visible,
         '.toggle_room_add_options': function (toggler) {
