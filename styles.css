@@ -360,6 +360,7 @@ line-height: 20px;
 button.toggle_room_add_options {
   -webkit-appearance: none;
   margin: 2px;
+  padding:0;
   -webkit-transition: -webkit-transform 0.22s ease-in-out;
   width: 54px;
   font-size: 20px;

@@ -195,7 +195,7 @@ function mikrotemplate(el, obj_or_array, id_pfx){
 			}
 			if (options.swipeleft) {
 				var f = function(ev){ options.swipeleft( this.data, ev, this ); };
-        for (var i = children.length - 1; i >= 0; i--) Hammer(children[i]).on('swipeleft', f);
+        for (var i = children.length - 1; i >= 0; i--) Hammer(children[i]).on('dragleft', f);
 			}
 			if (options.dblclick) {
 				var f = function(ev){ options.dblclick( this.data, ev, this ); };
