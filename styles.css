@@ -7,12 +7,14 @@ form{ margin: 0; }
 .page > div{ -webkit-flex: 0 0 auto; flex: 0 0 auto; }
 .row{ display: -webkit-flex; display: flex; position: relative; }
 .expando{ -webkit-flex: auto; flex: auto; }
+.noshrink{ -webkit-flex: 0 0 auto; flex: 0 0 auto; }
 .page > .expando { -webkit-flex: auto; flex: auto; overflow-y: scroll; -webkit-overflow-scrolling: touch; }
 .page .panel { background: #ccf; padding: 10px; }
 .tight.panel { padding: 2px 10px; }
 header h3, .panel h3 {
 	margin: 0; font-variant: small-caps; font-size: 14px; font-family: optima; color: #9C9C9C;
 }
+.centerflex { -webkit-align-self: center; align-self: center; }
 
 h1 {
 	font-family: optima;
@@ -84,8 +86,12 @@ h2 {
 
 div.player{
 	background: black;
-	min-height: 40px;
+	min-height: 46px;
 	padding: 0;
+}
+
+div.player img {
+  max-height: 12px;
 }
 
 .page header {
@@ -150,7 +156,7 @@ float:right;
 
 #room_lock_icon img{
 	max-height: 20px;
-	margin-bottom: 10px;
+  margin-right: 2px;
 }
 
 
@@ -281,13 +287,6 @@ font-size: 11px;
 color:#bbb;
 }
 
-#room_backlinks_div {
-text-align: right;
-font-size: 12px;
-margin: 10px;
-color: #666;
-}
-
 #room_song_title{
 	color: #ccc;
 	align-self: center;
@@ -298,13 +297,18 @@ color: #666;
 
 #room_author_note {
 margin: 10px 15px;
-padding: 5px 15px;
+padding: 5px 8px;
 color: #5A5757;
 font-size: 11px;
-background: #D9DBE7;
+background: #E0E2EC;
 border-radius: 3px;
-box-shadow: #99a 0px 0px 3px 1px;
 }
+
+.recessed {
+  box-shadow: inset black 0px 0px 4px;
+}
+
+#room_text_reqs{ margin: 0px 10px; }
 
 div.panel > button {
 width: 100%;

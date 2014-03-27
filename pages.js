@@ -461,11 +461,13 @@ function backlinks(r){
 
 
 function room_entry_requirements_text(r){
-    return compact([
+    var reqs = compact([
         r.start_loc && 'finding a location',
         r.song_title && 'listening to audio',
         r.riddle_q && 'answering a riddle'
-    ]).join(', ');
+    ]);
+    if (reqs.length == 0) return '';
+    return conjoin(reqs);
 }
 
 
@@ -474,24 +476,11 @@ function show_room(r){
     if (r.soundcloud_url) Player.stream('load', r.soundcloud_url, player_view(indicator), {
        title: r.song_title
     });
-    var reqs = compact([
-        r.start_loc && '<img src="img/locate.png">',
-        r.song_title && '<img src="img/note.png">',
-        r.riddle_q && '<img src="img/puzzle.png">'
-    ]);
+
+    var open = false;
     var text_reqs = room_entry_requirements_text(r);
-    if (text_reqs == '') text_reqs = 'Anyone can join.';
-    else text_reqs = 'For people to enter, it means ' + text_reqs;
-
-    var also_note = compact([
-        !r.title && 'a title',
-        !r.start_loc && 'a location',
-        !r.song_title && 'a sound',
-        !r.riddle_q && 'a riddle'
-    ]).join(', ');
-    if (also_note == '') also_note = 'edit';
-    else also_note = 'Edit to add ' + also_note;
-
+    if (text_reqs == '') { open = true; text_reqs = 'Anyone can join.'; }
+    else text_reqs = 'Entering this room means ' + text_reqs + '.';
     var room_add_options_visible = false;
 
     reveal('.page', 'show_room', {
@@ -499,9 +488,16 @@ function show_room(r){
         go_rooms: function(){ rooms(); },
         room_backlinks_div: [function () { backlinks(r); }, r.backlinks || false],
         room_backlinks_count: Object.keys(r.backlinks||{}).length,
-        room_author_note: [function () { room_settings(r); }, r.author == current_user_id],
-        room_author_also_note: also_note,
+
+        room_author_edit_button: [function(){
+            if (r.author == current_user_id) room_settings(r);
+        }, r.author == current_user_id],
+        room_author_note: function () { 
+            if (r.author == current_user_id) room_settings(r);
+        },
         room_text_reqs: text_reqs,
+        room_lock_icon: !open ? '<img src="img/locked.png">' :'<img src="img/unlocked.png">',
+
         room_play: function(){
             if (Player.current.sound) return Player.current.sound.togglePause();
             else return alert('No current sound');
@@ -511,11 +507,6 @@ function show_room(r){
             if (Player.current.sound) Player.current.sound.setPosition(0);
         },
         room_title: r.title || "New Room",
-        room_lock_icon: reqs[0] ? '<img src="img/locked.png">' :'<img src="img/unlocked.png">',
-        room_requires: reqs[0] ? reqs.join('') : '',
-        '.edit_settings': function(){
-            if (r.author == current_user_id) room_settings(r);
-        },
         room_add_options: !!room_add_options_visible,
         '.toggle_room_add_options': function (toggler) {
             room_add_options_visible = !room_add_options_visible;

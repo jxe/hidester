@@ -144,30 +144,29 @@
 <div class="page" id="show_room">
 	<header>
 		<button id="go_rooms" class="header_back_button simple_button"><big>&larr;</big></button>
+		<button id="room_backlinks_div" class="simple_button">
+			<b id="room_backlinks_count" class="simple_label"></b>
+		</button>
 		<h1 class="simple_button edit_settings">
 			<span id="room_title" class="simple_label"></span>
 			<small id="room_member_names" class="simple_label"></small>
 		</h1>
-		<button class="simple_button edit_settings">
-			<span id="room_lock_icon" class="simple_label"></span>
-			<span id="room_requires" class="simple_label"></span>
-		</button>
 	</header>
+
 	<div id="song_player" class="player row simple_hidable">
+		<div id="room_song_title" class="simple_label expando centerflex"></div>
 		<button class="simple_button" id="room_rewind"><img src='/img/rew.png'></button>
-		<div id="room_song_title" class="simple_label expando"></div>
 		<button class="simple_button expando" id="room_play">
 			<img id="room_play_indicator" src='/img/play.png'>
 		</button>
 	</div>
-	<div id="room_scrolly_section" class="expando">
-		<div id="room_backlinks_div" class="simple_button">
-			<b id="room_backlinks_count" class="simple_label"></b> rooms link to here &raquo;
-		</div>
 
-		<div id="room_author_note" class="simple_button message">
-			You made this room.  <span class="simple_label" id="room_text_reqs"></span>.
-			<a href="#" class="simple_label" id="room_author_also_note"></a> &raquo;
+	<div id="room_scrolly_section" class="expando recessed">
+
+		<div id="room_author_note" class="simple_button row">
+			<span id="room_lock_icon" class="simple_label noshrink centerflex"></span>
+			<span class="simple_label expando" id="room_text_reqs"></span>
+      <button class="simple_button centerflex noshrink" id="room_author_edit_button">Edit</button>
 		</div>
 
 		<div id="room_messages" class="expando fbobjlist">
