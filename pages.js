@@ -544,6 +544,12 @@ function show_room(r){
         room_messages: [fb('room_messages/%', r.id), function(msg){
             hop_to_room(msg.link);
         }, {
+            dblclick: function(data){
+                if (r.author != current_user_id) return;
+                var ok = confirm('Want to delete this comment?');
+                if (!ok) return;
+                fb('room_messages/%/%', r.id, data.id).remove();
+            },
             '.action': function (msg) {
                 if (msg.link) return "Follow link &raquo;";
                 else return '';
