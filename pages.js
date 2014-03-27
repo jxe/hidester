@@ -480,8 +480,8 @@ function show_room(r){
         r.riddle_q && '<img src="img/puzzle.png">'
     ]);
     var text_reqs = room_entry_requirements_text(r);
-    if (text_reqs == '') text_reqs = 'is public';
-    else text_reqs = 'requires ' + text_reqs;
+    if (text_reqs == '') text_reqs = 'Anyone can join.';
+    else text_reqs = 'For people to enter, it means ' + text_reqs;
 
     var also_note = compact([
         !r.title && 'a title',
