@@ -111,11 +111,13 @@ header button {
 	border:none;
 	color:white;
 	font-weight: bold;
-/*	background: rgba(255,255,255,0.3);*/
-	border-left: solid thin rgba(255,255,255,0.3);;
-	border-right: solid thin rgba(255,255,255,0.3);;
+	border-right: solid thin rgba(0,0,0,0.3);;
 	padding: 0px 14px;
 	position: relative;
+}
+
+header button:last-child {
+	border-left: solid thin rgba(0,0,0,0.3);;
 }
 
 header button big {
@@ -363,16 +365,20 @@ line-height: 20px;
 
 button.toggle_room_add_options {
   -webkit-appearance: none;
-  margin: 2px;
   padding:0;
   -webkit-transition: -webkit-transform 0.22s ease-in-out;
-  width: 54px;
+  width: 40px;
+  height: 40px;
   font-size: 20px;
   color: black;
   text-align: center;
-  border-radius: 5px;
+  border-radius: 50px;
   border: solid thin #999;
-  background: transparent;
+  background: white;
+   -webkit-align-self: center; align-self: center; 
+   flex: 0 0 auto;
+   -webkit-flex: 0 0 auto;
+   margin: 0px 5px;
 }
 
 button.toggle_room_add_options.open {
