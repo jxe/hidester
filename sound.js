@@ -81,7 +81,9 @@ var Player = {
             sound[method]({
                 onplay: function(){   Player.is('playing'); },
                 onpause: function(){  Player.is('paused'); },
-                onresume: function(){ Player.is('playing'); }
+                onresume: function(){ Player.is('playing'); },
+                onfinish: function(){ Player.is('paused'); Player.current.sound.setPosition(0); },
+                onload: function(){ (method == 'play') ? Player.is('playing') : Player.is('paused'); }
             });
         });
     }

@@ -60,11 +60,11 @@
 		};
 		special_evs.swipe = function(subs, ref, f){
 			firewidget.sub(Hammer(ref), 'dragleft dragright swipeleft swiperight', function(ev){
-				ev.gesture.stopPropagation();
+				// ev.gesture.stopPropagation();
 				ev.gesture.preventDefault();
 				if(ev.type == 'dragleft' || ev.type == 'dragright') return;
 				f.call(this, ev);
-				ev.gesture.stopDetect();
+				// ev.gesture.stopDetect();
 			});
 		};
 	}
