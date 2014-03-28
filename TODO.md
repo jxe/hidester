@@ -1,7 +1,9 @@
 TODO.md
 
-LINK FLOW
-- clarify what linking is, both in room and on link index page
+- totally redesign indexes, both the front page and for linking
+- if there are rooms nearby, encourage a join, otherwise encourage a create
+- set mtime on create and join
+
 
 INSIDE ROOMS
 - How do I invite people to an existing room?
