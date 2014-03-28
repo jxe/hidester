@@ -1,6 +1,5 @@
 // sound.js
 
-
 var beep = (function () {
     var ac = window.audioContext || window.webkitAudioContext;
     if (!ac) return;
@@ -33,18 +32,18 @@ var beep = (function () {
 
 
 
-
-
-
-
 var Player = {
-
     current: {},
-
     stop: function(){
       if (Player.current.sound) Player.current.sound.stop();
+      Player.is('paused');
     },
-
+    start_over: function(){
+        if (!Player.current.sound) return;
+        Player.current.sound.setPosition(0);
+        Player.current.sound.play();
+        Player.is('playing');
+    },
     clear: function(){
         if (Player.current.sound){
             Player.current.sound.stop();
@@ -53,46 +52,39 @@ var Player = {
         Player.is('notrack');
         Player.current = {};
     },
-
     ui: function(indicator){
         if (indicator) Player.indicator = indicator;
         if (Player.state) Player.is(Player.state);
     },
-
     is: function(state){
           Player.state = state;
           if (Player.indicator) Player.indicator(Player.state);
     },
-
+    // obsolete
     stream: function(method, track, indicator, options){
         if (indicator) Player.ui(indicator);
         Player.track(method, track, options && options.title);
     },
-
     track: function(method, track, title){
         if (track == Player.current.track) return;
         if (Player.current.track) Player.clear();
         Player.current.track = track;
         Player.current.title = title;
-        var load_happened = false;
+        Player.current.sound = null;
         Player.is('loading');
-        setTimeout(function () {
-            if (!load_happened) Player.is('load_failed');
-        }, 20000);
+        setTimeout(function () { if (!Player.current.sound) Player.is('load_failed'); }, 20000);
         SC.stream(track, function(sound){
-            load_happened = true;
-            if (!sound || !sound[method]) { console.log(sound); return; }
+            if (!sound || !sound[method]) return;
             Player.current.sound = sound;
-            if (method == 'play') Player.is('playing');
-            else Player.is('paused');
-            var options = {};
-            options.onplay=function(){   Player.is('playing'); };
-            options.onpause=function(){  Player.is('paused'); };
-            options.onresume=function(){ Player.is('playing'); };
-            sound[method](options);
+            //if (method == 'play') Player.is('playing');
+            //else Player.is('paused');
+            sound[method]({
+                onplay: function(){   Player.is('playing'); },
+                onpause: function(){  Player.is('paused'); },
+                onresume: function(){ Player.is('playing'); }
+            });
         });
     }
-
 };
 
 

@@ -6,7 +6,7 @@
 
 
 (function(){
-	var subs = {}, sub_scope, domains = {};
+	var subs = {}, sub_scope, domains = {}, special_evs = {};
 	window.firewidget = function(a, b){
 		if (!a.trim) { for (var x in a) firewidget(x, a[x]); return; }
 		firewidget.unsub(sub_scope = a);
@@ -25,6 +25,7 @@
 	};
 	firewidget.sub = function(ref, ev, f){
 		if (!subs[sub_scope]) subs[sub_scope] = [];
+		if (special_evs[ev]) return special_evs[ev](subs[sub_scope], ref, f);
 		subs[sub_scope].push(function(){ if (ref.off) ref.off(ev,f); else ref.removeEventListener(ev,f); });
 		if (ref.on) ref.on(ev, f); else ref.addEventListener(ev, f);
 	};
@@ -42,6 +43,31 @@
 		domains[domain] = Object.keys(wires || {});
 		if (wires) firewidget(wires);
 	};
+	if (window.Hammer){
+		special_evs.click = function(subs, ref, f){
+			firewidget.sub(Hammer(ref), 'tap', function(ev){
+				ev.gesture.stopPropagation();
+				ev.gesture.preventDefault();
+				f.call(this, ev);
+			});
+		};
+		special_evs.dblclick = function(subs, ref, f){
+			firewidget.sub(Hammer(ref), 'doubletap', function(ev){
+				ev.gesture.stopPropagation();
+				ev.gesture.preventDefault();
+				f.call(this, ev);
+			});
+		};
+		special_evs.swipe = function(subs, ref, f){
+			firewidget.sub(Hammer(ref), 'dragleft dragright swipeleft swiperight', function(ev){
+				ev.gesture.stopPropagation();
+				ev.gesture.preventDefault();
+				if(ev.type == 'dragleft' || ev.type == 'dragright') return;
+				f.call(this, ev);
+				ev.gesture.stopDetect();
+			});
+		};
+	}
 	firewidget.widgets = {
 		simple_label: function(el, value){
 			el.innerHTML = value;
@@ -68,9 +94,7 @@
 		simple_button: function(el, does, shown){
 			if (shown !== undefined && !shown) el.style.display = 'none';
 			else if (shown) el.style.display = '';
-      var h = window.Hammer ? Hammer(el) : el;
-      var evtype = window.Hammer ? 'tap' : 'click';
-			firewidget.sub(h, evtype, function (ev) { ev.preventDefault(); does(el); return false; });
+			firewidget.sub(el, 'click', function (ev) { ev.preventDefault(); does(el); return false; });
 		},
 		simple_toggle: function(el, does, start_state){
       var state = start_state;
@@ -80,10 +104,10 @@
         else el.classList.remove('on');
         does(state, el);
       };
-			firewidget.sub(el, 'click', function (ev) { 
+			firewidget.sub(el, 'click', function (ev) {
         ev.preventDefault();
         el.state(!state);
-        return false; 
+        return false;
       });
 		},
 		simple_list: function(el, array, onclick, id_pfx){
@@ -184,26 +208,18 @@ function mikrotemplate(el, obj_or_array, id_pfx){
 				}
 			});
 			mikrotemplate(el, array, id_prefix);
-      var children = el.childNodes;
+            var children = el.childNodes;
 			if (onclick) {
-        var f = function(ev){ onclick( this.data, ev, this ); };
-        if (window.Hammer){
-          for (var i = children.length - 1; i >= 0; i--) Hammer(children[i]).on('tap', f);
-        } else {
-          for (var i = children.length - 1; i >= 0; i--) children[i].onclick = f;
-        }
+               var f = function(ev){ onclick( this.data, ev, this ); };
+			   for (var i = children.length - 1; i >= 0; i--) sub(children[i], 'click', f);
 			}
-			if (options.swipeleft) {
+			if (options.swipe) {
 				var f = function(ev){ options.swipeleft( this.data, ev, this ); };
-        for (var i = children.length - 1; i >= 0; i--) Hammer(children[i]).on('dragleft', f);
+                for (var i = children.length - 1; i >= 0; i--) Hammer(children[i]).on('swipe', f);
 			}
 			if (options.dblclick) {
 				var f = function(ev){ options.dblclick( this.data, ev, this ); };
-        if (window.Hammer){
-          for (var i = children.length - 1; i >= 0; i--) Hammer(children[i]).on('doubletap', f);
-        } else {
-          for (var i = children.length - 1; i >= 0; i--) children[i].ondblclick = f;
-        }
+                for (var i = children.length - 1; i >= 0; i--) sub(children[i], 'dblclick', f);
 			}
 		};
 		el.update_row = function (o) {

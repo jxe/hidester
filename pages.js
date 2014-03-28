@@ -391,17 +391,15 @@ function choose_song(room, back_to){
             else return alert('No current sound');
         },
         room_settings_rewind: function(){
-            if (Player.current.sound) Player.current.sound.setPosition(0);
+            Player.start_over();
         },
         room_settings_next: function(){
             nextSong(room);
         },
         go_room_settings: function(){ 
-          Player.stop();
-          hop_to_room(room.id, back_to);
+            hop_to_room(room.id, back_to);
         },
         back_from_choose_song: function(){ 
-          Player.stop();
           hop_to_room(room.id, back_to);
         },
         search_input: function(entry){
@@ -549,7 +547,7 @@ function show_room(r){
                 if (!ok) return;
                 fb('room_messages/%/%', r.id, data.id).remove();
             },
-            swipeleft: function(data){
+            swipe: function(data){
                 if (r.author != current_user_id) return;
                 var ok = confirm('Want to delete this comment?');
                 if (!ok) return;

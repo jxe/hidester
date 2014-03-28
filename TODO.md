@@ -5,6 +5,15 @@ TODO.md
 - set mtime on create and join
 
 
+• Taps are cascading into next screens esp input
+• Player stop doesn't change indicator
+• I don't think choose song done should stop the song
+• I think rewind should also play from beginning
+• Songs are not playing on genre load
+• implement swipe correctly
+• Unsub gps when possible
+• tiny photo of room author on room index
+
 INSIDE ROOMS
 - How do I invite people to an existing room?
 
