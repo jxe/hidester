@@ -527,14 +527,22 @@ function show_room(r){
         },
         //add_choreo: function () { alert('Coming soon!'); },
         email_invite: function(){
+            var fname = prompt('your friend\'s name:');
+            if (!fname) return;
+            var note = prompt('A personal note, visible only once they\'ve managed to enter the room:');
+            if (!note) return;
+            fb('room_messages/%', r.id).push({
+                author: current_user_id,
+                author_name: short_name(),
+                invited_name: fname,
+                text: note
+            });
             var url = "http://manysecretdoors.org/#/rooms/" + r.id;
-            var subject = 'A secret room';
-            if (r.author == current_user_id) subject = 'I made a secret room';
+            var subject = 'I left you a secret note';
             var warning = '';
             var text_reqs = room_entry_requirements_text(r);
-            var qualifier = (r.author == current_user_id) ? 'my' : 'this';
-            if (text_reqs) warning = 'Once you click this link, visiting the room will mean ' + text_reqs + '.  ';
-            var body = 'Please consider visiting '+qualifier+' room on Many Secret Doors.  '+warning+'Here is the link: ' + url;
+            if (text_reqs) warning = 'To read it will involve ' + text_reqs + '.  ';
+            var body = 'I wrote you a personal note in a secret chatroom.  '+warning+'Here is the link, which will guide you through it: ' + url;
             window.location = 'mailto:?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
         },
         room_member_names: values(r.members).map(function (x) { return x.name; }).join(', '),
@@ -555,6 +563,15 @@ function show_room(r){
             },
             '.action': function (msg) {
                 if (msg.link) return "Follow link &raquo;";
+                else return '';
+            },
+            '.preamble': function(msg){
+                if (msg.link) return "posted a link";
+                else if (msg.invited_name) return "posted a personal note for <u>" + msg.invited_name;
+                else return '';
+            },
+            '.bodyclass': function(msg){
+                if (msg.invited_name) return 'personalnote';
                 else return '';
             }
         }],

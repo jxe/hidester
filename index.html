@@ -172,7 +172,10 @@
 		<div id="room_messages" class="expando fbobjlist">
 			<div class="message">
 				<b data-set="text:author_name"></b>
-				<i data-set="text:text"></i>
+				<span>
+					<span class='preamble' data-set="text:preamble"></span>
+					<i data-set="class:bodyclass text:text"> </i>
+				</span>
 				<span class="action" data-set="text:action"></span>
 			</div>
 		</div>
@@ -183,8 +186,8 @@
 	</form>
 	<div id="room_add_options" class="tight simple_hidable panel row">
 		<button id="room_link" class="simple_button">Link to another room</button>
-		<button id="email_invite" class="simple_button">Invite someone</button>
-    <!--<button id="add_choreo" class="simple_button">Add choreography</button>-->
+		<button id="email_invite" class="simple_button">Leave someone a note</button>
+    		<!--<button id="add_choreo" class="simple_button">Add choreography</button>-->
 	</div>
 </div>
 
